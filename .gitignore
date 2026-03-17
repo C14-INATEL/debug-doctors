@@ -1,0 +1,15 @@
+# IDEs
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Environment variables
+.env
+
+# Build Maven
+target/
+
+# Logs
+*.log
