@@ -1,7 +1,13 @@
 package br.inatel.debug_doctors.domain.patient;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.ld;
+import jakarta,persintence.Table;
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 @Table(name = "patient")
 @Entity
