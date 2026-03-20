@@ -1,7 +1,7 @@
 package br.inatel.debug_doctors.domain.schedule;
 
 import br.inatel.debug_doctors.domain.doctor.Doctor;
-import br.inatel.debug_doctors.domain.pacient.Pacient;
+import br.inatel.debug_doctors.domain.patient.Patient;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "pacient_id")
-    private Pacient patient;
+    private Patient patient;
 
     private LocalDateTime dateTime;
     private String description;

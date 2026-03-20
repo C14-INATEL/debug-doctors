@@ -1,7 +1,9 @@
 package br.inatel.debug_doctors.domain.patient;
 
-import jakarta.persistence.ld;
-import jakarta,persintence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
