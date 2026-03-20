@@ -41,6 +41,12 @@ Desenvolver uma API REST para gestão de horários médicos, com foco em garanti
 
 ---
 
+## 📊 Diagrama de Entidade-Relacionamento (DER)
+
+![Diagrama ER - Debug Doctors](./docs/img/img.png)
+
+---
+
 ## ⚙️ Regras de Negócio
 
 As seguintes validações são **obrigatórias** e devem ser testadas:
