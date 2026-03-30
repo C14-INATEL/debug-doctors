@@ -23,10 +23,24 @@ public class Schedule {
     private Doctor doctor;
 
     @ManyToOne
-    @JoinColumn(name = "pacient_id")
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     private LocalDateTime dateTime;
     private String description;
     private boolean confirmed;
+
+    public static Schedule createSchedule(Patient patient, Doctor doctor, LocalDateTime dateTime, String description) {
+        Schedule schedule = new Schedule();
+        schedule.setPatient(patient);
+        schedule.setDoctor(doctor);
+        schedule.setDateTime(dateTime);
+        schedule.setDescription(description);
+        schedule.setConfirmed(false);
+        return schedule;
+    }
+
+    public void confirmSchedule() {
+        this.confirmed = true;
+    }
 }
