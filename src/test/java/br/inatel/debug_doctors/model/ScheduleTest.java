@@ -17,7 +17,7 @@ class ScheduleTest {
         LocalDateTime dateTime = LocalDateTime.now();
         String description = "Routine Checkup";
 
-        Schedule schedule = Schedule.create(patient, doctor, dateTime, description);
+        Schedule schedule = Schedule.createSchedule(patient, doctor, dateTime, description);
 
         Assertions.assertNotNull(schedule);
         Assertions.assertEquals(patient, schedule.getPatient());
@@ -30,7 +30,8 @@ class ScheduleTest {
     @Test
     void confirmSchedule() {
 
-        Schedule schedule = Schedule.create(new Patient(), new Doctor(), LocalDateTime.now(), "Routine Checkup");
+        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now(),
+                "Routine Checkup");
 
         schedule.confirmSchedule();
 

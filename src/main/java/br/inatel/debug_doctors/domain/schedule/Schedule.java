@@ -30,7 +30,7 @@ public class Schedule {
     private String description;
     private boolean confirmed;
 
-    public static Schedule create(Patient patient, Doctor doctor, LocalDateTime dateTime, String description) {
+    public static Schedule createSchedule(Patient patient, Doctor doctor, LocalDateTime dateTime, String description) {
         Schedule schedule = new Schedule();
         schedule.setPatient(patient);
         schedule.setDoctor(doctor);
