@@ -2,31 +2,53 @@ package br.inatel.debug_doctors.model;
 
 import br.inatel.debug_doctors.domain.patient.Patient;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PatientTest {
 
     @Test
-    void shouldCreatePatientSuccessfully() {
+    void deveCriarPacienteComDadosCorretos() {
         // Arrange
-        String validName = "Wagner Dourado";
-        String validCpf = "123.456.789-00";
-        String validEmail = "wagner@example.com";
-
-        // Act
-        Patient patient = new Patient();
-        patient.setName(validName);
-        patient.setCpf(validCpf);
-        patient.setEmail(validEmail);
+        Patient patient = new Patient(1L, "João Silva", "123.456.789-00", "joao@email.com");
 
         // Assert
-        assertAll("Verify if patient attributes were set correctly",
-                () -> assertNotNull(patient, "Patient should not be null"),
-                () -> assertEquals(validName, patient.getName(), "Name should match the assigned value"),
-                () -> assertEquals(validCpf, patient.getCpf(), "CPF should match the assigned value"),
-                () -> assertEquals(validEmail, patient.getEmail(), "Email should match the assigned value")
-        );
+        assertEquals("João Silva", patient.getName());
+        assertEquals("123.456.789-00", patient.getCpf());
+        assertEquals("joao@email.com", patient.getEmail());
+    }
+
+    @Test
+    void deveAlterarNomeDoPaciente() {
+        // Arrange
+        Patient patient = new Patient(1L, "João Silva", "123.456.789-00", "joao@email.com");
+
+        // Act
+        patient.setName("Carlos Souza");
+
+        // Assert
+        assertEquals("Carlos Souza", patient.getName());
+    }
+
+    @Test
+    void deveAlterarEmailDoPaciente() {
+        // Arrange
+        Patient patient = new Patient(1L, "João Silva", "123.456.789-00", "joao@email.com");
+
+        // Act
+        patient.setEmail("carlos@email.com");
+
+        // Assert
+        assertEquals("carlos@email.com", patient.getEmail());
+    }
+
+    @Test
+    void deveCriarPacienteVazioComConstrutorPadrao() {
+        // Arrange + Act
+        Patient patient = new Patient();
+
+        // Assert
+        assertNull(patient.getName());
+        assertNull(patient.getCpf());
+        assertNull(patient.getEmail());
     }
 }
