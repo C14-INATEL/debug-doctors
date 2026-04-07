@@ -1,4 +1,4 @@
-package br.inatel.debug_doctors;
+package br.inatel.debug_doctors.domain;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

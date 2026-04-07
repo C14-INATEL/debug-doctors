@@ -1,4 +1,4 @@
-package br.inatel.debug_doctors.model;
+package br.inatel.debug_doctors.domain;
 
 import br.inatel.debug_doctors.domain.doctor.Doctor;
 import br.inatel.debug_doctors.domain.patient.Patient;
