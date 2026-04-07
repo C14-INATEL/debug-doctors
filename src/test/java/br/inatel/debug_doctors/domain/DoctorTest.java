@@ -27,3 +27,19 @@ public class DoctorTest {
     }
 
 }
+
+@Test
+void shouldSetDoctorShiftTimesCorrectly() {
+    // Arrange
+    Doctor doctor = new Doctor();
+    java.time.LocalTime start = java.time.LocalTime.of(8, 0);  // Start at 08:00
+    java.time.LocalTime end = java.time.LocalTime.of(17, 0);   // End at 17:00
+
+    // Act
+    doctor.setShiftStart(start);
+    doctor.setShiftEnd(end);
+
+    // Assert
+    assertEquals(start, doctor.getShiftStart(), "The shift start time should be correct");
+    assertEquals(end, doctor.getShiftEnd(), "The shift end time should be correct");
+}
