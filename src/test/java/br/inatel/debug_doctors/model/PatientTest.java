@@ -7,20 +7,24 @@ import static org.junit.jupiter.api.Assertions.*;
 class PatientTest {
 
     @Test
-    void deveCriarPacienteComDadosCorretos() {
+    void shouldCreatePatientWithCorrectData() {
         // Arrange
-        Patient patient = new Patient(1L, "João Silva", "123.456.789-00", "joao@email.com");
+        Patient patient = new Patient();
+        patient.setName("John Silva");
+        patient.setCpf("123.456.789-00");
+        patient.setEmail("john@email.com");
 
         // Assert
-        assertEquals("João Silva", patient.getName());
+        assertEquals("John Silva", patient.getName());
         assertEquals("123.456.789-00", patient.getCpf());
-        assertEquals("joao@email.com", patient.getEmail());
+        assertEquals("john@email.com", patient.getEmail());
     }
 
     @Test
-    void deveAlterarNomeDoPaciente() {
+    void shouldUpdatePatientName() {
         // Arrange
-        Patient patient = new Patient(1L, "João Silva", "123.456.789-00", "joao@email.com");
+        Patient patient = new Patient();
+        patient.setName("John Silva");
 
         // Act
         patient.setName("Carlos Souza");
@@ -30,9 +34,10 @@ class PatientTest {
     }
 
     @Test
-    void deveAlterarEmailDoPaciente() {
+    void shouldUpdatePatientEmail() {
         // Arrange
-        Patient patient = new Patient(1L, "João Silva", "123.456.789-00", "joao@email.com");
+        Patient patient = new Patient();
+        patient.setEmail("john@email.com");
 
         // Act
         patient.setEmail("carlos@email.com");
@@ -42,7 +47,7 @@ class PatientTest {
     }
 
     @Test
-    void deveCriarPacienteVazioComConstrutorPadrao() {
+    void shouldCreateEmptyPatientWithDefaultConstructor() {
         // Arrange + Act
         Patient patient = new Patient();
 
