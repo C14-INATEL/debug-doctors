@@ -38,4 +38,19 @@ class ScheduleTest {
         Assertions.assertTrue(schedule.isConfirmed());
     }
 
+    @Test
+    void shouldAllowReschedulingByUpdatingDateTime() {
+        // Arrange: Create the schedule with an initial date
+        Schedule schedule = new Schedule();
+        java.time.LocalDateTime originalTime = java.time.LocalDateTime.of(2026, 4, 15, 14, 0);
+        schedule.setDateTime(originalTime);
+
+        // Act: Change to a new date (Rescheduling)
+        java.time.LocalDateTime newTime = java.time.LocalDateTime.of(2026, 4, 20, 16, 30);
+        schedule.setDateTime(newTime);
+
+        // Assert: Ensure the saved date is the new date
+        Assertions.assertEquals(newTime, schedule.getDateTime(), "The schedule date and time should be updated to the new time");
+    }
+
 }
