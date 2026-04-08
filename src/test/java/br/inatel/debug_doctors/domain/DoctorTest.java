@@ -149,16 +149,20 @@ public class DoctorTest {
     }
 
     @Test
-    void shouldDetectInvalidShiftWhenEndIsBeforeStart() {
+    void shouldUpdateDoctorSpecialtyAndCrm() {
+
         Doctor doctor = new Doctor();
-        LocalTime shiftStart = LocalTime.of(18, 0);
-        LocalTime shiftEnd = LocalTime.of(8, 0);
+        doctor.setSpecialty("Clínico Geral");
+        doctor.setCrm("12345-MG");
 
-        doctor.setShiftStart(shiftStart);
-        doctor.setShiftEnd(shiftEnd);
 
-        assertTrue(
-                doctor.getShiftEnd().isBefore(doctor.getShiftStart()),
-                "shiftEnd should be before shiftStart, indicating an invalid shift");
+        doctor.setSpecialty("Cardiologista");
+        doctor.setCrm("98765-MG");
+
+
+        assertAll("Verify if doctor attributes were updated correctly",
+                () -> assertEquals("Cardiologista", doctor.getSpecialty(), "The specialty should be updated"),
+                () -> assertEquals("98765-SP", doctor.getCrm(), "The CRM should be updated")
+        );
     }
 }
