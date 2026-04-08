@@ -5,6 +5,7 @@ import br.inatel.debug_doctors.domain.patient.Patient;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "schedule")
@@ -30,7 +31,27 @@ public class Schedule {
     private String description;
     private boolean confirmed;
 
-    public static Schedule createSchedule(Patient patient, Doctor doctor, LocalDateTime dateTime, String description) {
+    private static void validateDateNotInPast(LocalDateTime dateTime) {
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("The appointment date cannot be in the past.");
+        }
+    }
+
+    public static void hasConflict(List<Schedule> existingSchedules, LocalDateTime dateTime) {
+        boolean hasConflict = existingSchedules.stream().anyMatch(s -> s.getDateTime().equals(dateTime));
+
+        if (hasConflict) {
+            throw new IllegalArgumentException("There is already an appointment scheduled for this time.");
+        }
+    }
+
+    public static Schedule createSchedule(Patient patient, Doctor doctor, LocalDateTime dateTime, String description,
+            List<Schedule> existingSchedules) {
+
+        validateDateNotInPast(dateTime);
+
+        hasConflict(existingSchedules, dateTime);
+
         Schedule schedule = new Schedule();
         schedule.setPatient(patient);
         schedule.setDoctor(doctor);
