@@ -11,8 +11,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/doctor")
 public class DoctorController {
-    @GetMapping("/get")
-    public String getDoctor() {
-      return "Hello Doctor!";
-    }}
-
+  @GetMapping("/get")
+  public String getDoctor() {
+    return "Hello Doctor!";
+  }
+}

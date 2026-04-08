@@ -7,6 +7,7 @@ import br.inatel.debug_doctors.domain.schedule.Schedule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import java.time.LocalDateTime;
+import java.util.List;
 
 class ScheduleTest {
 
@@ -14,10 +15,10 @@ class ScheduleTest {
     void testNewSchedule() {
         Patient patient = new Patient();
         Doctor doctor = new Doctor();
-        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
         String description = "Routine Checkup";
 
-        Schedule schedule = Schedule.createSchedule(patient, doctor, dateTime, description);
+        Schedule schedule = Schedule.createSchedule(patient, doctor, dateTime, description, List.of());
 
         Assertions.assertNotNull(schedule);
         Assertions.assertEquals(patient, schedule.getPatient());
@@ -30,8 +31,8 @@ class ScheduleTest {
     @Test
     void confirmSchedule() {
 
-        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now(),
-                "Routine Checkup");
+        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(1),
+                "Routine Checkup", List.of());
 
         schedule.confirmSchedule();
 
@@ -50,7 +51,36 @@ class ScheduleTest {
         schedule.setDateTime(newTime);
 
         // Assert: Ensure the saved date is the new date
-        Assertions.assertEquals(newTime, schedule.getDateTime(), "The schedule date and time should be updated to the new time");
+        Assertions.assertEquals(newTime, schedule.getDateTime(),
+                "The schedule date and time should be updated to the new time");
+    }
+
+    @Test
+    void cannotAllowScheduleInThePast() {
+        Patient patient = new Patient();
+        Doctor doctor = new Doctor();
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(1);
+        String description = "Routine Checkup";
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Schedule.createSchedule(patient, doctor, dateTime, description, List.of());
+        });
+
+    }
+
+    @Test
+    void cannotAllowOverlappingSchedules() {
+        Patient patient = new Patient();
+        Doctor doctor = new Doctor();
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+        String description = "Routine Checkup";
+
+        Schedule existingSchedule = Schedule.createSchedule(patient, doctor, dateTime, "Routine Checkup", List.of());
+        List<Schedule> doctorSchedules = List.of(existingSchedule);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Schedule.createSchedule(patient, doctor, dateTime, description, doctorSchedules);
+        });
     }
 
 }
