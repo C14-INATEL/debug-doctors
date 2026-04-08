@@ -3,9 +3,12 @@ package br.inatel.debug_doctors.domain;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 import java.time.LocalTime;
 import br.inatel.debug_doctors.domain.doctor.Doctor;
+
 
 public class DoctorTest {
     @Test
@@ -119,5 +122,47 @@ public class DoctorTest {
                 () -> assertEquals(validcrm, doctor.getCrm(), "Crm should match the assigned value"),
                 () -> assertEquals(shiftStart, doctor.getShiftStart(), "shiftStart should match the assigned value"),
                 () -> assertEquals(shiftEnd, doctor.getShiftEnd(), "shiftEnd should match the assigned value"));
+    }
+
+    @Test
+    void shouldHaveNullShiftTimesByDefault() {
+        Doctor doctor = new Doctor();
+
+        assertAll("Shift times should be null by default",
+                () -> assertNull(doctor.getShiftStart(), "shiftStart should be null by default"),
+                () -> assertNull(doctor.getShiftEnd(), "shiftEnd should be null by default")
+        );
+    }
+
+    @Test
+    void shouldReturnCorrectIdAfterSetting() {
+
+        Doctor doctor = new Doctor();
+        Long simulatedDatabaseId = 105L;
+
+
+        doctor.setId(simulatedDatabaseId);
+
+
+        assertEquals(simulatedDatabaseId, doctor.getId(),
+                "The returned ID should be equal to the defined ID.");
+    }
+
+    @Test
+    void shouldUpdateDoctorSpecialtyAndCrm() {
+
+        Doctor doctor = new Doctor();
+        doctor.setSpecialty("Clínico Geral");
+        doctor.setCrm("12345-MG");
+
+
+        doctor.setSpecialty("Cardiologista");
+        doctor.setCrm("98765-MG");
+
+
+        assertAll("Verify if doctor attributes were updated correctly",
+                () -> assertEquals("Cardiologista", doctor.getSpecialty(), "The specialty should be updated"),
+                () -> assertEquals("98765-MG", doctor.getCrm(), "The CRM should be updated")
+        );
     }
 }
