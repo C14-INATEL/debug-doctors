@@ -3,9 +3,12 @@ package br.inatel.debug_doctors.domain;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 import java.time.LocalTime;
 import br.inatel.debug_doctors.domain.doctor.Doctor;
+
 
 public class DoctorTest {
     @Test
@@ -122,43 +125,40 @@ public class DoctorTest {
     }
 
     @Test
-    void shouldVerifyIfShiftIsRegistered() {
-
+    void shouldHaveNullShiftTimesByDefault() {
         Doctor doctor = new Doctor();
 
-        // recording the times
-        doctor.setShiftStart(LocalTime.of(10, 0)); // 10:00
-        doctor.setShiftEnd(LocalTime.of(16, 0));   // 16:00
-
-        // Check if the system recognizes that you are now registered.
-        assertNotNull(doctor.getShiftStart(), "The start time must be recorded.");
-        assertNotNull(doctor.getShiftEnd(), "The end time should be recorded.");
+        assertAll("Shift times should be null by default",
+                () -> assertNull(doctor.getShiftStart(), "shiftStart should be null by default"),
+                () -> assertNull(doctor.getShiftEnd(), "shiftEnd should be null by default")
+        );
     }
 
     @Test
     void shouldReturnCorrectIdAfterSetting() {
-        // Arrange
+
         Doctor doctor = new Doctor();
         Long simulatedDatabaseId = 105L;
 
-        // Act
+
         doctor.setId(simulatedDatabaseId);
 
-        // Assert
+
         assertEquals(simulatedDatabaseId, doctor.getId(),
                 "The returned ID should be equal to the defined ID.");
     }
 
     @Test
-    void shouldSetShiftHoursCorrectly(){
+    void shouldDetectInvalidShiftWhenEndIsBeforeStart() {
         Doctor doctor = new Doctor();
-        LocalTime start = LocalTime.of(8,0); // 8:00
-        LocalTime end =  LocalTime.of(18,0);// 18:00
+        LocalTime shiftStart = LocalTime.of(18, 0);
+        LocalTime shiftEnd = LocalTime.of(8, 0);
 
-        doctor.setShiftStart(start);
-        doctor.setShiftEnd(end);
+        doctor.setShiftStart(shiftStart);
+        doctor.setShiftEnd(shiftEnd);
 
-        assertEquals(start, doctor.getShiftStart());
-        assertEquals(end, doctor.getShiftEnd());
+        assertTrue(
+                doctor.getShiftEnd().isBefore(doctor.getShiftStart()),
+                "shiftEnd should be before shiftStart, indicating an invalid shift");
     }
 }
