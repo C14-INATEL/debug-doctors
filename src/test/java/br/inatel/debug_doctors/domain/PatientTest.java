@@ -56,4 +56,16 @@ class PatientTest {
         assertNull(patient.getCpf());
         assertNull(patient.getEmail());
     }
+
+    @Test
+    void shouldCreatePatientUsingAllArgsConstructor() {
+        // Arrange & Act: Create the patient passing all data (ID, Name, CPF, Email)
+        Patient patient = new Patient(1L, "Camila Silva", "111.222.333-44", "camila@email.com");
+
+        // Assert: Verify if everything was mapped to the correct attributes
+        assertEquals(1L, patient.getId());
+        assertEquals("Camila Silva", patient.getName());
+        assertEquals("111.222.333-44", patient.getCpf());
+        assertEquals("camila@email.com", patient.getEmail());
+    }
 }
