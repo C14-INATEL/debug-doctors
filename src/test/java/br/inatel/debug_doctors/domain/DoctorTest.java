@@ -162,7 +162,7 @@ public class DoctorTest {
 
         assertAll("Verify if doctor attributes were updated correctly",
                 () -> assertEquals("Cardiologista", doctor.getSpecialty(), "The specialty should be updated"),
-                () -> assertEquals("98765-SP", doctor.getCrm(), "The CRM should be updated")
+                () -> assertEquals("98765-MG", doctor.getCrm(), "The CRM should be updated")
         );
     }
 }
