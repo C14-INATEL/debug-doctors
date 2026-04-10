@@ -30,7 +30,6 @@ public class Schedule {
     private String description;
     private boolean confirmed;
 
-    // --- Novos atributos para o Cancelamento ---
     private boolean canceled;
     private String cancellationReason;
 
@@ -51,7 +50,7 @@ public class Schedule {
     public static Schedule createSchedule(Patient patient, Doctor doctor, LocalDateTime dateTime, String description,
                                           List<Schedule> existingSchedules) {
 
-        // --- Novas regras: Não aceitar nulos ---
+
         if (patient == null) {
             throw new IllegalArgumentException("Patient cannot be null.");
         }
@@ -76,7 +75,6 @@ public class Schedule {
         this.confirmed = true;
     }
 
-    // --- Novo Método: Cancelar Consulta ---
     public void cancelSchedule(String reason) {
         if (this.canceled) {
             throw new IllegalStateException("Schedule is already canceled.");
