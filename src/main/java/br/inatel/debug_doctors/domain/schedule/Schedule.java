@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +30,10 @@ public class Schedule {
     private String description;
     private boolean confirmed;
 
+    // --- Novos atributos para o Cancelamento ---
+    private boolean canceled;
+    private String cancellationReason;
+
     private static void validateDateNotInPast(LocalDateTime dateTime) {
         if (dateTime.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("The appointment date cannot be in the past.");
@@ -46,10 +49,17 @@ public class Schedule {
     }
 
     public static Schedule createSchedule(Patient patient, Doctor doctor, LocalDateTime dateTime, String description,
-            List<Schedule> existingSchedules) {
+                                          List<Schedule> existingSchedules) {
+
+        // --- Novas regras: Não aceitar nulos ---
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient cannot be null.");
+        }
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor cannot be null.");
+        }
 
         validateDateNotInPast(dateTime);
-
         hasConflict(existingSchedules, dateTime);
 
         Schedule schedule = new Schedule();
@@ -58,10 +68,21 @@ public class Schedule {
         schedule.setDateTime(dateTime);
         schedule.setDescription(description);
         schedule.setConfirmed(false);
+        schedule.setCanceled(false);
         return schedule;
     }
 
     public void confirmSchedule() {
         this.confirmed = true;
+    }
+
+    // --- Novo Método: Cancelar Consulta ---
+    public void cancelSchedule(String reason) {
+        if (this.canceled) {
+            throw new IllegalStateException("Schedule is already canceled.");
+        }
+        this.canceled = true;
+        this.cancellationReason = reason;
+        this.confirmed = false;
     }
 }
