@@ -83,4 +83,53 @@ class ScheduleTest {
         });
     }
 
+
+    @Test
+    void shouldCancelScheduleSuccessfully() {
+
+        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(1), "Routine", List.of());
+
+        schedule.cancelSchedule("Paciente adoeceu");
+
+        Assertions.assertTrue(schedule.isCanceled());
+        Assertions.assertEquals("Paciente adoeceu", schedule.getCancellationReason());
+        Assertions.assertFalse(schedule.isConfirmed());
+    }
+
+    @Test
+    void cannotCancelAlreadyCanceledSchedule() {
+
+        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(1), "Routine", List.of());
+        schedule.cancelSchedule("Motivo 1");
+
+        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
+            schedule.cancelSchedule("Motivo 2");
+        });
+        Assertions.assertEquals("Schedule is already canceled.", exception.getMessage());
+    }
+
+    @Test
+    void cannotCreateScheduleWithoutPatient() {
+
+        Doctor doctor = new Doctor();
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Schedule.createSchedule(null, doctor, dateTime, "Routine", List.of());
+        });
+        Assertions.assertEquals("Patient cannot be null.", exception.getMessage());
+    }
+
+    @Test
+    void cannotCreateScheduleWithoutDoctor() {
+
+        Patient patient = new Patient();
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Schedule.createSchedule(patient, null, dateTime, "Routine", List.of());
+        });
+        Assertions.assertEquals("Doctor cannot be null.", exception.getMessage());
+    }
+
 }
