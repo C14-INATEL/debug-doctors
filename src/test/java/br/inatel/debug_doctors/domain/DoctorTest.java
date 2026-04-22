@@ -1,16 +1,68 @@
 package br.inatel.debug_doctors.domain;
 
+import java.time.LocalTime;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
-import java.time.LocalTime;
+
 import br.inatel.debug_doctors.domain.doctor.Doctor;
 
 
+
 public class DoctorTest {
+
+    private static class DoctorMock extends Doctor {
+        private final String crm;
+        private final LocalTime shiftStart;
+        private final LocalTime shiftEnd;
+
+        DoctorMock(String crm, LocalTime shiftStart, LocalTime shiftEnd) {
+            this.crm = crm;
+            this.shiftStart = shiftStart;
+            this.shiftEnd = shiftEnd;
+        }
+
+        @Override
+        public String getCrm() {
+            return crm;
+        }
+
+        @Override
+        public LocalTime getShiftStart() {
+            return shiftStart;
+        }
+
+        @Override
+        public LocalTime getShiftEnd() {
+            return shiftEnd;
+        }
+    }
+
+    private static class DoctorBusinessValidator {
+        void validateCrm(Doctor doctor) {
+            String crm = doctor.getCrm();
+            if (crm == null || crm.isBlank()) {
+                throw new IllegalArgumentException("CRM must be informed");
+            }
+        }
+
+        void validateShift(Doctor doctor) {
+            LocalTime shiftStart = doctor.getShiftStart();
+            LocalTime shiftEnd = doctor.getShiftEnd();
+
+            if (shiftStart == null || shiftEnd == null) {
+                throw new IllegalArgumentException("Shift start/end must be informed");
+            }
+            if (!shiftStart.isBefore(shiftEnd)) {
+                throw new IllegalArgumentException("Shift start must be before shift end");
+            }
+        }
+    }
+
     @Test
     void shouldCreateDoctorSuccessfully() {
         String validName = "Wagner Dourado";
@@ -27,6 +79,29 @@ public class DoctorTest {
                 () -> assertEquals(validName, doctor.getName(), "Name should match the assigned value"),
                 () -> assertEquals(validspecialty, doctor.getSpecialty(), "specialty should match the assigned value"),
                 () -> assertEquals(validcrm, doctor.getCrm(), "Crm should match the assigned value"));
+    }
+
+    @Test
+    void shouldValidateDoctorWithValidCrm() {
+        Doctor mockedDoctor = new DoctorMock("12345-MG", null, null);
+
+        DoctorBusinessValidator validator = new DoctorBusinessValidator();
+
+        validator.validateCrm(mockedDoctor);
+    }
+
+    @Test
+    void shouldThrowWhenDoctorHasInvalidShift() {
+        Doctor mockedDoctor = new DoctorMock(null, LocalTime.of(18, 0), LocalTime.of(8, 0));
+
+        DoctorBusinessValidator validator = new DoctorBusinessValidator();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> validator.validateShift(mockedDoctor)
+        );
+
+        assertEquals("Shift start must be before shift end", exception.getMessage());
     }
 
     @Test
