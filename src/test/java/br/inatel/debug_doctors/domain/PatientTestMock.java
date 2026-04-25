@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PatientMockTest {
 
+    // Fake subclass that overrides Patient behavior for testing
+
     private static class PatientMock extends Patient {
         @Override
         public String getName() {
@@ -21,7 +23,7 @@ class PatientMockTest {
         }
     }
     @Test
-    void ReturnMockedPatientName() {
+    void shouldReturnMockedPatientName() {
         Patient fakePatient = new PatientMock();
 
         assertEquals("Mocked Patient Name", fakePatient.getName(),
@@ -29,7 +31,7 @@ class PatientMockTest {
     }
 
     @Test
-    void ReturnMockedPatientInfo() {
+    void shouldReturnMockedPatientEmailAndCpf() {
         Patient fakePatient = new PatientMock();
 
         assertEquals("mocked@email.com", fakePatient.getEmail(),
