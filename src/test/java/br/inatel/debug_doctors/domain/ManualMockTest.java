@@ -11,49 +11,40 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SimpleManualMockTest {
-
-    // --- 1. Manual Mocks Setup ---
-    // Creating fake inner classes to override behavior for testing.
+public class ManualMockTest {
 
     private static class PatientMock extends Patient {
         @Override
         public String getName() {
-            return "Mocked Patient Name";
+            return "Mocked Patient";
         }
     }
 
     private static class DoctorMock extends Doctor {
         @Override
         public String getName() {
-            return "Mocked Doctor Name";
+            return "Mocked Doctor";
         }
     }
 
-    // --- 2. Tests ---
-
     @Test
-    void testMockNumberOne_shouldValidateFakePatientBehavior() {
-        // Arrange & Act: Instantiate the manual mock
-        Patient fakePatient = new PatientMock();
+    void shouldReturnMockedPatientName() {
+        Patient mockedPatient = new PatientMock();
 
-        // Assert: Verify if the mock returns the programmed fake data
-        assertEquals("Mocked Patient Name", fakePatient.getName(), "The mock should return the fake name");
+        assertEquals("Mocked Patient", mockedPatient.getName());
     }
 
     @Test
-    void testMockNumberTwo_shouldCreateScheduleWithFakeDependencies() {
-        // Arrange: Prepare mocks and valid data
-        Patient fakePatient = new PatientMock();
-        Doctor fakeDoctor = new DoctorMock();
-        LocalDateTime validDate = LocalDateTime.now().plusDays(5);
+    void shouldCreateScheduleWithMockedDependencies() {
+        Patient mockedPatient = new PatientMock();
+        Doctor mockedDoctor = new DoctorMock();
+        LocalDateTime scheduleDate = LocalDateTime.now().plusDays(5);
+        String description = "Routine Checkup";
 
-        // Act: Inject manual mocks into Schedule creation
-        Schedule schedule = Schedule.createSchedule(fakePatient, fakeDoctor, validDate, "Fake Schedule", List.of());
+        Schedule createdSchedule = Schedule.createSchedule(mockedPatient, mockedDoctor, scheduleDate, description);
 
-        // Assert: Verify if the schedule correctly stored the mocked instances
-        assertNotNull(schedule, "The schedule should not be null");
-        assertEquals("Mocked Patient Name", schedule.getPatient().getName(), "The saved patient must be the mock");
-        assertEquals("Mocked Doctor Name", schedule.getDoctor().getName(), "The saved doctor must be the mock");
+        assertNotNull(createdSchedule);
+        assertEquals("Mocked Patient", createdSchedule.getPatient().getName());
+        assertEquals("Mocked Doctor", createdSchedule.getDoctor().getName());
     }
 }
