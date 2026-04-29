@@ -1,4 +1,4 @@
-package br.inatel.debug_doctors.model;
+package br.inatel.debug_doctors.domain;
 
 import br.inatel.debug_doctors.domain.patient.Patient;
 import org.junit.jupiter.api.Test;
@@ -40,4 +40,5 @@ class PatientMockTest {
         assertEquals("000.000.000-00", fakePatient.getCpf(),
                 "The mock should return the fake cpf");
     }
+
 }
