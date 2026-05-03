@@ -132,4 +132,32 @@ class ScheduleTest {
         Assertions.assertEquals("Doctor cannot be null.", exception.getMessage());
     }
 
+    @Test
+    void shouldNotConfirmAlreadyConfirmedSchedule() {
+        Schedule schedule = Schedule.createSchedule(
+                new Patient(), new Doctor(),
+                LocalDateTime.now().plusDays(1),
+                "Routine", List.of()
+        );
+
+        schedule.confirmSchedule();
+        schedule.confirmSchedule();
+
+        Assertions.assertTrue(schedule.isConfirmed());
+    }
+
+    @Test
+    void shouldHaveCorrectDescriptionAfterCreation() {
+        Patient patient = new Patient();
+        Doctor doctor = new Doctor();
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(2);
+        String description = "Cardiology consultation";
+
+        Schedule schedule = Schedule.createSchedule(
+                patient, doctor, dateTime, description, List.of()
+        );
+
+        Assertions.assertEquals("Cardiology consultation", schedule.getDescription());
+    }
+
 }
