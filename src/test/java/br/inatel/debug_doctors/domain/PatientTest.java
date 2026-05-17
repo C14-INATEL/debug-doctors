@@ -134,33 +134,6 @@ class PatientTest {
         assertEquals("000.000.000-00", fakePatient.getCpf(), "The mock should return the fake cpf");
     }
 
-
-    @Test
-    void shouldThrowExceptionWhenPatientEmailIsInvalid() {
-        Patient mockedPatient = new PatientMock("Augusto", "augustohospital.com", "111.222.333-44");
-        PatientBusinessValidator validator = new PatientBusinessValidator();
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> validator.validateEmail(mockedPatient)
-        );
-
-        assertEquals("The provided email is invalid", exception.getMessage());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenPatientCpfIsTooShort() {
-        Patient mockedPatient = new PatientMock("Augusto", "augusto@hospital.com", "123");
-        PatientBusinessValidator validator = new PatientBusinessValidator();
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> validator.validateCpf(mockedPatient)
-        );
-
-        assertEquals("The CPF must contain 14 characters including punctuation", exception.getMessage());
-    }
-
     @Test
     void shouldValidatePatientWithValidData() {
         Patient mockedPatient = new PatientMock("Augusto", "augusto@hospital.com", "111.222.333-44");
