@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Assertions;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 class ScheduleTest {
 
     @Test
@@ -133,31 +136,28 @@ class ScheduleTest {
     }
 
     @Test
-    void shouldNotConfirmAlreadyConfirmedSchedule() {
-        Schedule schedule = Schedule.createSchedule(
-                new Patient(), new Doctor(),
-                LocalDateTime.now().plusDays(1),
-                "Routine", List.of()
-        );
+    void shouldCreateScheduleSuccessfullyWithMockedDoctorAndPatient() {
+        Doctor doctor = mock(Doctor.class);
+        Patient patient = mock(Patient.class);
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
 
-        schedule.confirmSchedule();
-        schedule.confirmSchedule();
+        Schedule result = Schedule.createSchedule(patient, doctor, dateTime, "Routine Checkup", List.of());
 
-        Assertions.assertTrue(schedule.isConfirmed());
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(doctor, result.getDoctor());
+        Assertions.assertEquals(patient, result.getPatient());
     }
 
     @Test
-    void shouldHaveCorrectDescriptionAfterCreation() {
-        Patient patient = new Patient();
-        Doctor doctor = new Doctor();
-        LocalDateTime dateTime = LocalDateTime.now().plusDays(2);
-        String description = "Cardiology consultation";
+    void shouldThrowWhenConflictDetectedWithMockedExistingSchedule() {
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
 
-        Schedule schedule = Schedule.createSchedule(
-                patient, doctor, dateTime, description, List.of()
+        Schedule existingSchedule = mock(Schedule.class);
+        when(existingSchedule.getDateTime()).thenReturn(dateTime);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                Schedule.hasConflict(List.of(existingSchedule), dateTime)
         );
-
-        Assertions.assertEquals("Cardiology consultation", schedule.getDescription());
     }
 
 }
