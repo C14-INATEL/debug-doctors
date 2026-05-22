@@ -1,6 +1,6 @@
 FROM eclipse-temurin:25-jdk-alpine
 
-MAINTAINER https://github.com/C14-INATEL/debug-doctors
+LABEL maintainer="https://github.com/C14-INATEL/debug-doctors"
 
 WORKDIR /app
 
