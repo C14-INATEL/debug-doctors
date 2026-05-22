@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Assertions;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 class ScheduleTest {
 
     @Test
@@ -130,6 +133,31 @@ class ScheduleTest {
             Schedule.createSchedule(patient, null, dateTime, "Routine", List.of());
         });
         Assertions.assertEquals("Doctor cannot be null.", exception.getMessage());
+    }
+
+    @Test
+    void shouldCreateScheduleSuccessfullyWithMockedDoctorAndPatient() {
+        Doctor doctor = mock(Doctor.class);
+        Patient patient = mock(Patient.class);
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+
+        Schedule result = Schedule.createSchedule(patient, doctor, dateTime, "Routine Checkup", List.of());
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(doctor, result.getDoctor());
+        Assertions.assertEquals(patient, result.getPatient());
+    }
+
+    @Test
+    void shouldThrowWhenConflictDetectedWithMockedExistingSchedule() {
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+
+        Schedule existingSchedule = mock(Schedule.class);
+        when(existingSchedule.getDateTime()).thenReturn(dateTime);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                Schedule.hasConflict(List.of(existingSchedule), dateTime)
+        );
     }
 
 }
