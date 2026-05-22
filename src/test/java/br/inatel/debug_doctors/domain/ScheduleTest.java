@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Assertions;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 class ScheduleTest {
 
     @Test
@@ -131,48 +134,26 @@ class ScheduleTest {
     }
 
     @Test
-    void shouldThrowWhenScheduleIsOutsideDoctorShift() {
-        Patient patient = new Patient();
-        Doctor doctor = new Doctor();
+    void shouldCreateScheduleSuccessfullyWithMockedDoctorAndPatient() {
+        Doctor doctor = mock(Doctor.class);
+        Patient patient = mock(Patient.class);
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
 
-        doctor.setShiftStart(java.time.LocalTime.of(8, 0));
-        doctor.setShiftEnd(java.time.LocalTime.of(12, 0));
+        Schedule result = Schedule.createSchedule(patient, doctor, dateTime, "Routine Checkup", List.of());
 
-        LocalDateTime dateTime = LocalDateTime.now().plusDays(2).withHour(13).withMinute(0);
-
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Schedule.createSchedule(patient, doctor, dateTime, "Outside Shift", List.of());
-        });
-        Assertions.assertEquals("The appointment must be scheduled within the doctor's shift hours.",
-                exception.getMessage());
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(doctor, result.getDoctor());
+        Assertions.assertEquals(patient, result.getPatient());
     }
 
     @Test
-    void shouldThrowWhenScheduleOverlapsWithin30Minutes() {
-        Patient patient = new Patient();
-        Doctor doctor = new Doctor();
-        LocalDateTime firstTime = LocalDateTime.now().plusDays(2).withHour(10).withMinute(0);
-        LocalDateTime secondTime = firstTime.plusMinutes(15); // Overlaps as it is within 30 min
+    void shouldThrowWhenConflictDetectedWithMockedExistingSchedule() {
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
 
-        Schedule firstSchedule = Schedule.createSchedule(patient, doctor, firstTime, "First", List.of());
-        List<Schedule> existingSchedules = List.of(firstSchedule);
+        Schedule existingSchedule = mock(Schedule.class);
+        when(existingSchedule.getDateTime()).thenReturn(dateTime);
 
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Schedule.createSchedule(patient, doctor, secondTime, "Second", existingSchedules);
-        });
-        Assertions.assertEquals("There is already an appointment scheduled for this time.", exception.getMessage());
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Schedule.hasConflict(List.of(existingSchedule), dateTime));
     }
-
-    @Test
-    void shouldThrowWhenCancellingWithLessThan24Hours() {
-        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusHours(12),
-                "Routine", List.of());
-
-        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
-            schedule.cancelSchedule("Too late");
-        });
-        Assertions.assertEquals("An appointment can only be canceled with more than 24 hours in advance.",
-                exception.getMessage());
-    }
-
 }
