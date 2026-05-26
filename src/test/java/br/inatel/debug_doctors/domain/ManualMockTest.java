@@ -41,7 +41,7 @@ public class ManualMockTest {
         LocalDateTime scheduleDate = LocalDateTime.now().plusDays(5);
         String description = "Routine Checkup";
 
-        Schedule createdSchedule = Schedule.createSchedule(mockedPatient, mockedDoctor, scheduleDate, description);
+        Schedule createdSchedule = Schedule.createSchedule(mockedPatient, mockedDoctor, scheduleDate, description, List.of());
 
         assertNotNull(createdSchedule);
         assertEquals("Mocked Patient", createdSchedule.getPatient().getName());

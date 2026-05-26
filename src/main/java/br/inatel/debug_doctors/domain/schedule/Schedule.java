@@ -5,6 +5,7 @@ import br.inatel.debug_doctors.domain.patient.Patient;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -34,13 +35,30 @@ public class Schedule {
     private String cancellationReason;
 
     private static void validateDateNotInPast(LocalDateTime dateTime) {
-        if (dateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("The appointment date cannot be in the past.");
+        if (dateTime.isBefore(LocalDateTime.now().plusMinutes(30))) {
+            throw new IllegalArgumentException("The appointment must be scheduled with at least 30 minutes in advance.");
+        }
+    }
+
+    private static void validateDoctorShift(Doctor doctor, LocalDateTime dateTime) {
+        LocalTime shiftStart = doctor.getShiftStart();
+        LocalTime shiftEnd = doctor.getShiftEnd();
+        if (shiftStart != null && shiftEnd != null) {
+            LocalTime appointmentStart = dateTime.toLocalTime();
+            LocalTime appointmentEnd = appointmentStart.plusMinutes(30);
+            if (appointmentStart.isBefore(shiftStart) || appointmentEnd.isAfter(shiftEnd)) {
+                throw new IllegalArgumentException("The appointment must be scheduled within the doctor's shift hours.");
+            }
         }
     }
 
     public static void hasConflict(List<Schedule> existingSchedules, LocalDateTime dateTime) {
-        boolean hasConflict = existingSchedules.stream().anyMatch(s -> s.getDateTime().equals(dateTime));
+        boolean hasConflict = existingSchedules.stream()
+                .filter(s -> !s.isCanceled())
+                .anyMatch(s -> {
+                    long minutesDiff = java.time.Duration.between(s.getDateTime(), dateTime).abs().toMinutes();
+                    return minutesDiff < 30;
+                });
 
         if (hasConflict) {
             throw new IllegalArgumentException("There is already an appointment scheduled for this time.");
@@ -59,6 +77,7 @@ public class Schedule {
         }
 
         validateDateNotInPast(dateTime);
+        validateDoctorShift(doctor, dateTime);
         hasConflict(existingSchedules, dateTime);
 
         Schedule schedule = new Schedule();
@@ -78,6 +97,9 @@ public class Schedule {
     public void cancelSchedule(String reason) {
         if (this.canceled) {
             throw new IllegalStateException("Schedule is already canceled.");
+        }
+        if (LocalDateTime.now().plusHours(24).isAfter(this.dateTime)) {
+            throw new IllegalStateException("An appointment can only be canceled with more than 24 hours in advance.");
         }
         this.canceled = true;
         this.cancellationReason = reason;

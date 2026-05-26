@@ -83,11 +83,11 @@ class ScheduleTest {
         });
     }
 
-
     @Test
     void shouldCancelScheduleSuccessfully() {
 
-        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(1), "Routine", List.of());
+        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(2),
+                "Routine", List.of());
 
         schedule.cancelSchedule("Paciente adoeceu");
 
@@ -99,7 +99,8 @@ class ScheduleTest {
     @Test
     void cannotCancelAlreadyCanceledSchedule() {
 
-        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(1), "Routine", List.of());
+        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(2),
+                "Routine", List.of());
         schedule.cancelSchedule("Motivo 1");
 
         IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
@@ -130,6 +131,50 @@ class ScheduleTest {
             Schedule.createSchedule(patient, null, dateTime, "Routine", List.of());
         });
         Assertions.assertEquals("Doctor cannot be null.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowWhenScheduleIsOutsideDoctorShift() {
+        Patient patient = new Patient();
+        Doctor doctor = new Doctor();
+        // Shift is 08:00 to 12:00
+        doctor.setShiftStart(java.time.LocalTime.of(8, 0));
+        doctor.setShiftEnd(java.time.LocalTime.of(12, 0));
+
+        // Appointment at 13:00 (outside shift)
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(2).withHour(13).withMinute(0);
+
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Schedule.createSchedule(patient, doctor, dateTime, "Outside Shift", List.of());
+        });
+        Assertions.assertEquals("The appointment must be scheduled within the doctor's shift hours.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowWhenScheduleOverlapsWithin30Minutes() {
+        Patient patient = new Patient();
+        Doctor doctor = new Doctor();
+        LocalDateTime firstTime = LocalDateTime.now().plusDays(2).withHour(10).withMinute(0);
+        LocalDateTime secondTime = firstTime.plusMinutes(15); // Overlaps as it is within 30 min
+
+        Schedule firstSchedule = Schedule.createSchedule(patient, doctor, firstTime, "First", List.of());
+        List<Schedule> existingSchedules = List.of(firstSchedule);
+
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Schedule.createSchedule(patient, doctor, secondTime, "Second", existingSchedules);
+        });
+        Assertions.assertEquals("There is already an appointment scheduled for this time.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowWhenCancellingWithLessThan24Hours() {
+        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusHours(12),
+                "Routine", List.of());
+
+        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
+            schedule.cancelSchedule("Too late");
+        });
+        Assertions.assertEquals("An appointment can only be canceled with more than 24 hours in advance.", exception.getMessage());
     }
 
 }
