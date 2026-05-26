@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Assertions;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 class ScheduleTest {
 
     @Test
@@ -134,6 +137,7 @@ class ScheduleTest {
     }
 
     @Test
+<<<<<<< HEAD
     void shouldThrowWhenScheduleIsOutsideDoctorShift() {
         Patient patient = new Patient();
         Doctor doctor = new Doctor();
@@ -175,6 +179,30 @@ class ScheduleTest {
             schedule.cancelSchedule("Too late");
         });
         Assertions.assertEquals("An appointment can only be canceled with more than 24 hours in advance.", exception.getMessage());
+=======
+    void shouldCreateScheduleSuccessfullyWithMockedDoctorAndPatient() {
+        Doctor doctor = mock(Doctor.class);
+        Patient patient = mock(Patient.class);
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+
+        Schedule result = Schedule.createSchedule(patient, doctor, dateTime, "Routine Checkup", List.of());
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(doctor, result.getDoctor());
+        Assertions.assertEquals(patient, result.getPatient());
+    }
+
+    @Test
+    void shouldThrowWhenConflictDetectedWithMockedExistingSchedule() {
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+
+        Schedule existingSchedule = mock(Schedule.class);
+        when(existingSchedule.getDateTime()).thenReturn(dateTime);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                Schedule.hasConflict(List.of(existingSchedule), dateTime)
+        );
+>>>>>>> 5d81575e2e0a2160c5a1d2907467c55b370185a6
     }
 
 }
