@@ -1,6 +1,7 @@
 pipeline {
-    agent any
 
+    agent any
+    
     options {
         timeout(time: 30, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
@@ -11,14 +12,27 @@ pipeline {
 
     environment {
         PIPELINE_NAME = 'Debug Doctors — CI/CD Pipeline'
+        POSTGRES_PASSWORD = credentials('postgres-db-password')
     }
-
+    
     stages {
+        stage('Static Analysis') {
+            steps {
+                echo "Running static code analysis..."
+                sh './mvnw checkstyle:check'
+            }
+        }
+
         stage('Tests') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
+                }
+            }
             steps {
                 echo "Running unit tests..."
-                // Runs the FIRST principles tests for the business rules
-                sh './mvnw clean test'
+                sh 'chmod +x mvnw && ./mvnw clean test'
             }
             post {
                 success {
@@ -26,24 +40,37 @@ pipeline {
                 }
                 failure {
                     echo "Tests: FAILURE"
-                    // Ensures Jenkins marks the build as failed immediately
                     error("Pipeline aborted due to test failures.")
                 }
             }
         }
 
         stage('Build') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
+                }
+            }
             steps {
                 echo "Packaging the Spring Boot application..."
-                // Skips tests here since they already passed in the previous stage
-                sh './mvnw package -DskipTests'
+                sh 'chmod +x mvnw && ./mvnw package -DskipTests'
             }
+
+            post {
+                success {
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+            }
+        }
         }
 
         stage('Deploy') {
+            when {
+                branch 'main'
+            }
             steps {
                 echo "Starting PostgreSQL Database and API containers..."
-                // Explicitly targeting 'api' and 'db' so Jenkins doesn't reboot itself
                 sh 'docker-compose up -d --build api db'
             }
             post {
