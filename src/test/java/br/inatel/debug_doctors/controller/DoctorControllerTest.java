@@ -1,19 +1,27 @@
 package br.inatel.debug_doctors.controller;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(MockitoExtension.class)
 class DoctorControllerTest {
+
+    // @InjectMocks instancia o controller e injeta qualquer @Mock declarado
+    // automaticamente — sem precisar de "new DoctorController()" manual
+    @InjectMocks
+    private DoctorController doctorController;
 
     @Test
     void shouldReturnHelloDoctorMessage() {
-        // Arrange: Instantiate the controller
-        DoctorController controller = new DoctorController();
+        // Act: chama o endpoint diretamente pelo controller injetado
+        String response = doctorController.getDoctor();
 
-        // Act: Call the function that simulates the endpoint
-        String response = controller.getDoctor();
-
-        // Assert: Validate if the response is exactly as expected
-        assertEquals("Hello Doctor!", response, "The controller message should be 'Hello Doctor!'");
+        // Assert
+        assertEquals("Hello Doctor!", response,
+                "The controller message should be 'Hello Doctor!'");
     }
 }

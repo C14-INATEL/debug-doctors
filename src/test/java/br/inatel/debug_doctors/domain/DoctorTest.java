@@ -1,202 +1,128 @@
 package br.inatel.debug_doctors.domain;
 
+import br.inatel.debug_doctors.domain.doctor.Doctor;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-import br.inatel.debug_doctors.domain.doctor.Doctor;
-
-
-
+@ExtendWith(MockitoExtension.class)
 public class DoctorTest {
 
-    private static class DoctorMock extends Doctor {
-        private final String crm;
-        private final LocalTime shiftStart;
-        private final LocalTime shiftEnd;
+    // Mockito cria e injeta o mock automaticamente pelo @Mock
+    @Mock
+    private Doctor mockedDoctor;
 
-        DoctorMock(String crm, LocalTime shiftStart, LocalTime shiftEnd) {
-            this.crm = crm;
-            this.shiftStart = shiftStart;
-            this.shiftEnd = shiftEnd;
-        }
-
-        @Override
-        public String getCrm() {
-            return crm;
-        }
-
-        @Override
-        public LocalTime getShiftStart() {
-            return shiftStart;
-        }
-
-        @Override
-        public LocalTime getShiftEnd() {
-            return shiftEnd;
-        }
-    }
-
-    private static class DoctorBusinessValidator {
-        void validateCrm(Doctor doctor) {
-            String crm = doctor.getCrm();
-            if (crm == null || crm.isBlank()) {
-                throw new IllegalArgumentException("CRM must be informed");
-            }
-        }
-
-        void validateShift(Doctor doctor) {
-            LocalTime shiftStart = doctor.getShiftStart();
-            LocalTime shiftEnd = doctor.getShiftEnd();
-
-            if (shiftStart == null || shiftEnd == null) {
-                throw new IllegalArgumentException("Shift start/end must be informed");
-            }
-            if (!shiftStart.isBefore(shiftEnd)) {
-                throw new IllegalArgumentException("Shift start must be before shift end");
-            }
-        }
-    }
+    // -------------------------------------------------------------------------
+    // Testes que usam a entidade real (sem mock) — não precisam de mock
+    // -------------------------------------------------------------------------
 
     @Test
     void shouldCreateDoctorSuccessfully() {
         String validName = "Wagner Dourado";
-        String validspecialty = "Urologista";
-        String validcrm = "validated";
+        String validSpecialty = "Urologista";
+        String validCrm = "validated";
 
         Doctor doctor = new Doctor();
         doctor.setName(validName);
-        doctor.setSpecialty(validspecialty);
-        doctor.setCrm(validcrm);
+        doctor.setSpecialty(validSpecialty);
+        doctor.setCrm(validCrm);
 
         assertAll("Verify if doctor attributes were set correctly",
-                () -> assertNotNull(doctor, "Patient should not be null"),
+                () -> assertNotNull(doctor, "Doctor should not be null"),
                 () -> assertEquals(validName, doctor.getName(), "Name should match the assigned value"),
-                () -> assertEquals(validspecialty, doctor.getSpecialty(), "specialty should match the assigned value"),
-                () -> assertEquals(validcrm, doctor.getCrm(), "Crm should match the assigned value"));
-    }
-
-    @Test
-    void shouldValidateDoctorWithValidCrm() {
-        Doctor mockedDoctor = new DoctorMock("12345-MG", null, null);
-
-        DoctorBusinessValidator validator = new DoctorBusinessValidator();
-
-        validator.validateCrm(mockedDoctor);
-    }
-
-    @Test
-    void shouldThrowWhenDoctorHasInvalidShift() {
-        Doctor mockedDoctor = new DoctorMock(null, LocalTime.of(18, 0), LocalTime.of(8, 0));
-
-        DoctorBusinessValidator validator = new DoctorBusinessValidator();
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> validator.validateShift(mockedDoctor)
-        );
-
-        assertEquals("Shift start must be before shift end", exception.getMessage());
+                () -> assertEquals(validSpecialty, doctor.getSpecialty(), "Specialty should match the assigned value"),
+                () -> assertEquals(validCrm, doctor.getCrm(), "CRM should match the assigned value"));
     }
 
     @Test
     void shouldCreateDoctorWithInvalidName() {
         String invalidName = "";
-        String validspecialty = "Urologista";
-        String validcrm = "validated";
+        String validSpecialty = "Urologista";
+        String validCrm = "validated";
 
         Doctor doctor = new Doctor();
         doctor.setName(invalidName);
-        doctor.setSpecialty(validspecialty);
-        doctor.setCrm(validcrm);
+        doctor.setSpecialty(validSpecialty);
+        doctor.setCrm(validCrm);
 
         assertAll("Verify if doctor attributes were set correctly",
-                () -> assertNotNull(doctor, "Patient should not be null"),
+                () -> assertNotNull(doctor, "Doctor should not be null"),
                 () -> assertEquals(invalidName, doctor.getName(), "Name should match the assigned value"),
-                () -> assertEquals(validspecialty, doctor.getSpecialty(), "specialty should match the assigned value"),
-                () -> assertEquals(validcrm, doctor.getCrm(), "Crm should match the assigned value"));
+                () -> assertEquals(validSpecialty, doctor.getSpecialty(), "Specialty should match the assigned value"),
+                () -> assertEquals(validCrm, doctor.getCrm(), "CRM should match the assigned value"));
     }
 
     @Test
     void shouldCreateDoctorWithShiftTimes() {
-        String validName = "Dimitri";
-        String validspecialty = "Cardiologista";
-        String validcrm = "validated";
         LocalTime shiftStart = LocalTime.of(8, 0);
         LocalTime shiftEnd = LocalTime.of(18, 0);
 
         Doctor doctor = new Doctor();
-        doctor.setName(validName);
-        doctor.setSpecialty(validspecialty);
-        doctor.setCrm(validcrm);
+        doctor.setName("Dimitri");
+        doctor.setSpecialty("Cardiologista");
+        doctor.setCrm("validated");
         doctor.setShiftStart(shiftStart);
         doctor.setShiftEnd(shiftEnd);
 
-        assertAll("Verify if doctor attributes were set correctly",
-                () -> assertNotNull(doctor, "Patient should not be null"),
+        assertAll("Verify if doctor shift times were set correctly",
+                () -> assertNotNull(doctor, "Doctor should not be null"),
                 () -> assertEquals(shiftStart, doctor.getShiftStart(), "shiftStart should match the assigned value"),
                 () -> assertEquals(shiftEnd, doctor.getShiftEnd(), "shiftEnd should match the assigned value"));
     }
 
     @Test
     void shouldCreateDoctorWithInvalidShiftTimes() {
-        String validName = "Dimitri";
-        String validspecialty = "Cardiologista";
-        String validcrm = "validated";
+        // shiftStart > shiftEnd — valores invertidos intencionalmente
         LocalTime shiftStart = LocalTime.of(18, 0);
         LocalTime shiftEnd = LocalTime.of(8, 0);
 
         Doctor doctor = new Doctor();
-        doctor.setName(validName);
-        doctor.setSpecialty(validspecialty);
-        doctor.setCrm(validcrm);
-        doctor.setShiftStart(shiftEnd);
-        doctor.setShiftEnd(shiftStart);
+        doctor.setName("Dimitri");
+        doctor.setSpecialty("Cardiologista");
+        doctor.setCrm("validated");
+        doctor.setShiftStart(shiftStart);
+        doctor.setShiftEnd(shiftEnd);
 
-        assertAll("Verify if doctor attributes were set correctly",
-                () -> assertNotNull(doctor, "Patient should not be null"),
-                () -> assertEquals(shiftEnd, doctor.getShiftStart(), "shiftStart should match the assigned value"),
-                () -> assertEquals(shiftStart, doctor.getShiftEnd(), "shiftEnd should match the assigned value"));
+        assertAll("Verify if doctor shift times reflect the invalid state",
+                () -> assertNotNull(doctor, "Doctor should not be null"),
+                () -> assertEquals(shiftStart, doctor.getShiftStart(), "shiftStart should match"),
+                () -> assertEquals(shiftEnd, doctor.getShiftEnd(), "shiftEnd should match"));
     }
 
     @Test
     void shouldCreateDoctorWithInvalidCrm() {
-        String validName = "Dimitri";
-        String validspecialty = "Cardiologista";
         String invalidCrm = "";
 
         Doctor doctor = new Doctor();
-        doctor.setName(validName);
-        doctor.setSpecialty(validspecialty);
+        doctor.setName("Dimitri");
+        doctor.setSpecialty("Cardiologista");
         doctor.setCrm(invalidCrm);
 
-        assertAll("Verify if doctor attributes were set correctly",
-                () -> assertNotNull(doctor, "Patient should not be null"),
-                () -> assertEquals(invalidCrm, doctor.getCrm(), "Crm should match the assigned value"));
+        assertAll("Verify if doctor invalid CRM is stored as-is",
+                () -> assertNotNull(doctor, "Doctor should not be null"),
+                () -> assertEquals(invalidCrm, doctor.getCrm(), "CRM should match the assigned value"));
     }
 
     @Test
     void shouldCreateDoctorWithAllArgsConstructor() {
-        String validName = "Dimitri";
-        String validspecialty = "Cardiologista";
-        String validcrm = "validated";
         LocalTime shiftStart = LocalTime.of(8, 0);
         LocalTime shiftEnd = LocalTime.of(18, 0);
 
-        Doctor doctor = new Doctor(null, validName, validspecialty, validcrm, shiftStart, shiftEnd);
+        Doctor doctor = new Doctor(null, "Dimitri", "Cardiologista", "validated", shiftStart, shiftEnd);
 
-        assertAll("Verify if doctor attributes were set correctly",
-                () -> assertNotNull(doctor, "Patient should not be null"),
-                () -> assertEquals(validName, doctor.getName(), "Name should match the assigned value"),
-                () -> assertEquals(validspecialty, doctor.getSpecialty(), "specialty should match the assigned value"),
-                () -> assertEquals(validcrm, doctor.getCrm(), "Crm should match the assigned value"),
-                () -> assertEquals(shiftStart, doctor.getShiftStart(), "shiftStart should match the assigned value"),
-                () -> assertEquals(shiftEnd, doctor.getShiftEnd(), "shiftEnd should match the assigned value"));
+        assertAll("Verify if doctor attributes were set correctly via all-args constructor",
+                () -> assertNotNull(doctor, "Doctor should not be null"),
+                () -> assertEquals("Dimitri", doctor.getName(), "Name should match"),
+                () -> assertEquals("Cardiologista", doctor.getSpecialty(), "Specialty should match"),
+                () -> assertEquals("validated", doctor.getCrm(), "CRM should match"),
+                () -> assertEquals(shiftStart, doctor.getShiftStart(), "shiftStart should match"),
+                () -> assertEquals(shiftEnd, doctor.getShiftEnd(), "shiftEnd should match"));
     }
 
     @Test
@@ -205,19 +131,15 @@ public class DoctorTest {
 
         assertAll("Shift times should be null by default",
                 () -> assertNull(doctor.getShiftStart(), "shiftStart should be null by default"),
-                () -> assertNull(doctor.getShiftEnd(), "shiftEnd should be null by default")
-        );
+                () -> assertNull(doctor.getShiftEnd(), "shiftEnd should be null by default"));
     }
 
     @Test
     void shouldReturnCorrectIdAfterSetting() {
-
         Doctor doctor = new Doctor();
         Long simulatedDatabaseId = 105L;
 
-
         doctor.setId(simulatedDatabaseId);
-
 
         assertEquals(simulatedDatabaseId, doctor.getId(),
                 "The returned ID should be equal to the defined ID.");
@@ -225,19 +147,72 @@ public class DoctorTest {
 
     @Test
     void shouldUpdateDoctorSpecialtyAndCrm() {
-
         Doctor doctor = new Doctor();
         doctor.setSpecialty("Clínico Geral");
         doctor.setCrm("12345-MG");
 
-
         doctor.setSpecialty("Cardiologista");
         doctor.setCrm("98765-MG");
 
-
         assertAll("Verify if doctor attributes were updated correctly",
                 () -> assertEquals("Cardiologista", doctor.getSpecialty(), "The specialty should be updated"),
-                () -> assertEquals("98765-MG", doctor.getCrm(), "The CRM should be updated")
+                () -> assertEquals("98765-MG", doctor.getCrm(), "The CRM should be updated"));
+    }
+
+    // -------------------------------------------------------------------------
+    // Testes com Mockito — substituem as inner classes DoctorMock e
+    // DoctorBusinessValidator feitas manualmente no original
+    // -------------------------------------------------------------------------
+
+    @Test
+    void shouldValidateDoctorWithValidCrm() {
+        // Mockito configura o retorno do getCrm() sem precisar de subclasse manual
+        when(mockedDoctor.getCrm()).thenReturn("12345-MG");
+
+        String crm = mockedDoctor.getCrm();
+
+        assertNotNull(crm, "CRM should not be null");
+        assertFalse(crm.isBlank(), "CRM should not be blank");
+
+        // Garante que getCrm() foi realmente chamado durante o teste
+        verify(mockedDoctor, times(1)).getCrm();
+    }
+
+    @Test
+    void shouldThrowWhenDoctorHasInvalidShift() {
+        // Simula um médico cujo expediente está invertido (18h início, 8h fim)
+        when(mockedDoctor.getShiftStart()).thenReturn(LocalTime.of(18, 0));
+        when(mockedDoctor.getShiftEnd()).thenReturn(LocalTime.of(8, 0));
+
+        LocalTime shiftStart = mockedDoctor.getShiftStart();
+        LocalTime shiftEnd = mockedDoctor.getShiftEnd();
+
+        // A regra de negócio — shiftStart deve ser antes de shiftEnd
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    if (!shiftStart.isBefore(shiftEnd)) {
+                        throw new IllegalArgumentException("Shift start must be before shift end");
+                    }
+                }
         );
+
+        assertEquals("Shift start must be before shift end", exception.getMessage());
+
+        verify(mockedDoctor).getShiftStart();
+        verify(mockedDoctor).getShiftEnd();
+    }
+
+    @Test
+    void shouldReturnNullShiftTimesWhenNotConfigured() {
+        // Mock sem configuração de retorno devolve null por padrão para objetos
+        when(mockedDoctor.getShiftStart()).thenReturn(null);
+        when(mockedDoctor.getShiftEnd()).thenReturn(null);
+
+        assertNull(mockedDoctor.getShiftStart(), "Unconfigured shiftStart should be null");
+        assertNull(mockedDoctor.getShiftEnd(), "Unconfigured shiftEnd should be null");
+
+        verify(mockedDoctor).getShiftStart();
+        verify(mockedDoctor).getShiftEnd();
     }
 }
