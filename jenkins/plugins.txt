@@ -1,6 +1,6 @@
 git:latest
 github:latest
-maven:latest
+maven-plugin:latest
 configuration-as-code:latest
 workflow-aggregator:latest
 pipeline-stage-view:latest
