@@ -10,6 +10,10 @@ pipeline {
         disableConcurrentBuilds()
     }
 
+    triggers {
+        cron('H/5 * * * *') // Poll or run periodically every 5 minutes
+    }
+
     environment {
         PIPELINE_NAME = 'Debug Doctors — CI/CD Pipeline'
         POSTGRES_PASSWORD = credentials('postgres-db-password')
