@@ -33,12 +33,6 @@ pipeline {
         }
 
         stage('Tests') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'develop'
-                }
-            }
             steps {
                 echo "Running unit tests..."
                 sh 'mvn clean test'
@@ -55,12 +49,6 @@ pipeline {
         }
 
         stage('Build') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'develop'
-                }
-            }
             steps {
                 echo "Packaging the Spring Boot application..."
                 sh 'mvn package -DskipTests'
