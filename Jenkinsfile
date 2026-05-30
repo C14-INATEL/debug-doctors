@@ -19,7 +19,16 @@ pipeline {
         stage('Static Analysis') {
             steps {
                 echo "Running static code analysis..."
-                sh './mvnw checkstyle:check'
+                sh 'mvn checkstyle:check'
+            }
+            post {
+                success {
+                    echo "Static Analysis: PASSED"
+                }
+                failure {
+                    echo "Static Analysis: FAILED"
+                    error("Pipeline aborted due to static analysis failures.")
+                }
             }
         }
 
@@ -32,7 +41,7 @@ pipeline {
             }
             steps {
                 echo "Running unit tests..."
-                sh 'chmod +x mvnw && ./mvnw clean test'
+                sh 'mvn clean test'
             }
             post {
                 success {
@@ -54,12 +63,16 @@ pipeline {
             }
             steps {
                 echo "Packaging the Spring Boot application..."
-                sh 'chmod +x mvnw && ./mvnw package -DskipTests'
+                sh 'mvn package -DskipTests'
             }
 
             post {
                 success {
                     archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+                failure {
+                    echo "Build: FAILED"
+                    error("Pipeline aborted due to build failures.")
                 }
             }
         }
@@ -68,13 +81,19 @@ pipeline {
             when {
                 branch 'main'
             }
+            
             steps {
                 echo "Starting PostgreSQL Database and API containers..."
                 sh 'docker-compose up -d --build api db'
             }
             post {
-                success { echo "Deploy: CONTAINERS ARE UP AND RUNNING ON PORT 8000" }
-                failure { echo "Deploy: FAILED TO START CONTAINERS" }
+                success {
+                    echo "Deploy: CONTAINERS ARE UP AND RUNNING ON PORT 8000"
+                }
+                failure {
+                    echo "Deploy: FAILED TO START CONTAINERS"
+                    error("Pipeline aborted due to deploy failures.")
+                }
             }
         }
     }
