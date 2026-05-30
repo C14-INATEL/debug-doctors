@@ -63,7 +63,6 @@ pipeline {
                 }
             }
         }
-        }
 
         stage('Deploy') {
             when {
