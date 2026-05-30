@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
     gnupg \
-    lsb-release
+    lsb-release \
+    maven
 
 
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg \
