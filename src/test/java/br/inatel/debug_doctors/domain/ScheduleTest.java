@@ -153,7 +153,8 @@ class ScheduleTest {
         Schedule existingSchedule = mock(Schedule.class);
         when(existingSchedule.getDateTime()).thenReturn(dateTime);
 
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> Schedule.hasConflict(List.of(existingSchedule), dateTime));
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                Schedule.hasConflict(List.of(existingSchedule), dateTime)
+        );
     }
 }
