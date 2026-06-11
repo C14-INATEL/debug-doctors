@@ -71,9 +71,9 @@ pipeline {
         }
 
         stage('Deploy') {
-            when {
-                branch 'main'
-            }
+           // when {
+            //    branch 'main'
+           // }
 
             steps {
                 echo "Starting PostgreSQL Database and API containers..."
@@ -105,13 +105,13 @@ pipeline {
            // }
 
             steps {
-                echo "Running Postman automated collection via Newman..."
-                sh '''
-                docker run --rm --network="host" \
-                  -v ${WORKSPACE}/postman:/etc/newman \
-                  -t postman/newman run /etc/newman/collection.json
-                '''
-            }
+             echo "Running Postman automated collection via Newman..."
+             sh '''
+             docker run --rm --network="host" \
+                 -v jenkins_home:/var/jenkins_home \
+                  -t postman/newman run ${WORKSPACE}/postman/collection.json
+                  '''
+                    }
             post {
                 success {
                     echo "API Tests: ALL ENDPOINTS ARE RESPONDING CORRECTLY"
