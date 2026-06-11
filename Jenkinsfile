@@ -100,9 +100,9 @@ pipeline {
 
 
         stage('E2E API Tests (Newman)') {
-            when {
-                branch 'main'
-            }
+           // when {
+           //    branch 'main'
+           // }
 
             steps {
                 echo "Running Postman automated collection via Newman..."
