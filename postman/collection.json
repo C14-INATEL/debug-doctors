@@ -33,7 +33,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"name\": \"Dr. Wagner Dourado\",\n  \"crm\": \"123456MG\",\n  \"specialty\": \"Urologist\"\n}"
+          "raw": "{\n  \"name\": \"Dr. Wagner Dourado\",\n  \"crm\": \"123456MG\",\n  \"specialty\": \"Urologist\",\n  \"shiftStart\": \"08:00:00\",\n  \"shiftEnd\": \"18:00:00\"\n}"
         },
         "url": {
           "raw": "http://localhost:8000/api/medicos",
@@ -120,7 +120,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"doctorId\": {{doctorId}},\n  \"patientId\": {{patientId}},\n  \"dateTime\": \"2026-06-10T14:30:00\",\n  \"description\": \"First routine checkup\"\n}"
+          "raw": "{\n  \"doctorId\": {{doctorId}},\n  \"patientId\": {{patientId}},\n  \"dateTime\": \"2026-08-15T14:30:00\",\n  \"description\": \"First routine checkup\"\n}"
         },
         "url": {
           "raw": "http://localhost:8000/api/agendamentos",
