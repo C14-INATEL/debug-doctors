@@ -44,6 +44,7 @@ pipeline {
             post {
                 success {
                     echo "Tests: ALL BUSINESS RULES PASSED"
+                    jacoco execPattern: 'target/*.exec', classPattern: 'target/classes', sourcePattern: 'src/main/java'
                 }
                 failure {
                     echo "Tests: FAILURE"

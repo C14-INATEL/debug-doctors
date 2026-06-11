@@ -7,3 +7,4 @@ pipeline-stage-view:latest
 pipeline-utility-steps:latest
 ansicolor:latest
 timestamper:latest
+jacoco:latest
