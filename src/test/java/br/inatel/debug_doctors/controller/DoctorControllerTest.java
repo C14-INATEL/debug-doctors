@@ -14,8 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(MockitoExtension.class)
 class DoctorControllerTest {
 
-    // @InjectMocks instancia o controller e injeta qualquer @Mock declarado
-    // automaticamente — sem precisar de "new DoctorController()" manual
     @InjectMocks
     private DoctorController doctorController;
 
@@ -24,7 +22,6 @@ class DoctorControllerTest {
         // Act: chama o endpoint diretamente pelo controller injetado
         String response = doctorController.getDoctor();
 
-        // Assert
         assertEquals("Hello Doctor!", response,
                 "The controller message should be 'Hello Doctor!'");
     }
