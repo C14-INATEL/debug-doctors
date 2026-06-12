@@ -110,7 +110,7 @@ class ScheduleTest {
         // Arrange
         Schedule schedule = Schedule.createSchedule(
                 mockedPatient, mockedDoctor,
-                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2),
                 "Routine", List.of()
         );
 
