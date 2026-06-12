@@ -1,0 +1,6 @@
+CREATE TABLE patient (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    cpf VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);

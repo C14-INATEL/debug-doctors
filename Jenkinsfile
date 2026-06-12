@@ -42,9 +42,6 @@ pipeline {
                 sh 'mvn clean test'
             }
             post {
-                success {
-                    echo "Tests: ALL BUSINESS RULES PASSED"
-                }
                 failure {
                     echo "Tests: FAILURE"
                     error("Pipeline aborted due to test failures.")

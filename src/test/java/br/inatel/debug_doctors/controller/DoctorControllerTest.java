@@ -22,8 +22,11 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 class DoctorControllerTest {
 
+    @Mock
+    private DoctorService doctorService;
+
     @InjectMocks
-    private DoctorController doctorController;
+    private DoctorController controller;
 
     @Mock
     private DoctorService doctorService;
