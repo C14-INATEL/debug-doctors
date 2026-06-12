@@ -55,7 +55,7 @@ public class ScheduleService {
     }
 
     // -------------------------------------------------------------------------
-    // MÉTODOS AUXILIARES EXTRAÍDOS (REFACTORING)
+    // MÉTODOS AUXILIARES EXTRAÍDOS (REFACTORING)...
     // -------------------------------------------------------------------------
 
     private List<Schedule> getSchedulesByDoctor(Long doctorId) {
