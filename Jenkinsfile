@@ -42,14 +42,18 @@ pipeline {
                 sh 'mvn clean test'
             }
             post {
-                success {
-                    echo "Tests: ALL BUSINESS RULES PASSED"
-                    jacoco execPattern: 'target/*.exec', classPattern: 'target/classes', sourcePattern: 'src/main/java'
-                }
                 failure {
                     echo "Tests: FAILURE"
                     error("Pipeline aborted due to test failures.")
                 }
+            }
+        }
+
+        stage('Code Coverage') {
+            steps {
+                echo "Publishing code coverage reports..."
+                jacoco execPattern: 'target/*.exec', classPattern: 'target/classes', sourcePattern: 'src/main/java'
+                archiveArtifacts artifacts: 'target/site/jacoco/**', allowEmptyArchive: true
             }
         }
 
