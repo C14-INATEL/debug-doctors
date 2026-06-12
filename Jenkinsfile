@@ -52,6 +52,23 @@ pipeline {
             }
         }
 
+        stage('Security Test') {
+            steps {
+                echo "Checking for vulnerabilities in project dependencies..."
+                // O comando que aciona o plugin que instalamos no pom.xml
+                sh 'mvn dependency-check:check'
+            }
+            post {
+                success {
+                    echo "Security Test: SECURE. NO CRITICAL VULNERABILITIES FOUND."
+                }
+                failure {
+                    echo "Security Test: VULNERABILITIES DETECTED."
+                    error("Pipeline aborted due to security issues.")
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 echo "Packaging the Spring Boot application..."
