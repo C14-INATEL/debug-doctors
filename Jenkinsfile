@@ -108,7 +108,7 @@ pipeline {
              echo "Running Postman automated collection via Newman..."
              sh '''
              docker run --rm --network="host" \
-                 -v jenkins_home:/var/jenkins_home \
+                 --volumes-from $(hostname) \
                   -t postman/newman run ${WORKSPACE}/postman/collection.json
                   '''
                     }

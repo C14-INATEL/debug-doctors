@@ -36,10 +36,12 @@
           "raw": "{\n  \"name\": \"Dr. Wagner Dourado\",\n  \"crm\": \"123456MG\",\n  \"specialty\": \"Urologist\",\n  \"shiftStart\": \"08:00:00\",\n  \"shiftEnd\": \"18:00:00\"\n}"
         },
         "url": {
-          "raw": "http://localhost:8000/api/medicos",
+          "raw": "http://host.docker.internal:8000/api/medicos",
           "protocol": "http",
           "host": [
-            "localhost"
+            "host",
+            "docker",
+            "internal"
           ],
           "port": "8000",
           "path": [
@@ -82,10 +84,12 @@
           "raw": "{\n  \"name\": \"Esthefano Rosa\",\n  \"cpf\": \"11122233344\",\n  \"email\": \"Rosa@email.com\"\n}"
         },
         "url": {
-          "raw": "http://localhost:8000/api/pacientes",
+          "raw": "http://host.docker.internal:8000/api/pacientes",
           "protocol": "http",
           "host": [
-            "localhost"
+            "host",
+            "docker",
+            "internal"
           ],
           "port": "8000",
           "path": [
@@ -123,10 +127,12 @@
           "raw": "{\n  \"doctorId\": {{doctorId}},\n  \"patientId\": {{patientId}},\n  \"dateTime\": \"2026-08-15T14:30:00\",\n  \"description\": \"First routine checkup\"\n}"
         },
         "url": {
-          "raw": "http://localhost:8000/api/agendamentos",
+          "raw": "http://host.docker.internal:8000/api/agendamentos",
           "protocol": "http",
           "host": [
-            "localhost"
+            "host",
+            "docker",
+            "internal"
           ],
           "port": "8000",
           "path": [
