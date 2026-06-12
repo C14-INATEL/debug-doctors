@@ -14,13 +14,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class DoctorTest {
 
-    // Mockito cria e injeta o mock automaticamente pelo @Mock
     @Mock
     private Doctor mockedDoctor;
-
-    // -------------------------------------------------------------------------
-    // Testes que usam a entidade real (sem mock) — não precisam de mock
-    // -------------------------------------------------------------------------
 
     @Test
     void shouldCreateDoctorSuccessfully() {
@@ -159,11 +154,6 @@ public class DoctorTest {
                 () -> assertEquals("98765-MG", doctor.getCrm(), "The CRM should be updated"));
     }
 
-    // -------------------------------------------------------------------------
-    // Testes com Mockito — substituem as inner classes DoctorMock e
-    // DoctorBusinessValidator feitas manualmente no original
-    // -------------------------------------------------------------------------
-
     @Test
     void shouldValidateDoctorWithValidCrm() {
         // Mockito configura o retorno do getCrm() sem precisar de subclasse manual
@@ -174,7 +164,6 @@ public class DoctorTest {
         assertNotNull(crm, "CRM should not be null");
         assertFalse(crm.isBlank(), "CRM should not be blank");
 
-        // Garante que getCrm() foi realmente chamado durante o teste
         verify(mockedDoctor, times(1)).getCrm();
     }
 
