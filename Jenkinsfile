@@ -57,13 +57,26 @@ pipeline {
                 sh 'mvn clean test'
             }
             post {
-                success {
-                    echo "Tests: ALL BUSINESS RULES PASSED"
-                    jacoco execPattern: 'target/*.exec', classPattern: 'target/classes', sourcePattern: 'src/main/java'
-                }
                 failure {
                     echo "Tests: FAILURE"
                     error("Pipeline aborted due to test failures.")
+                }
+            }
+        }
+
+        stage('Security Test') {
+            steps {
+                echo "Checking for vulnerabilities in project dependencies..."
+                // O comando que aciona o plugin que instalamos no pom.xml
+                sh 'mvn dependency-check:check'
+            }
+            post {
+                success {
+                    echo "Security Test: SECURE. NO CRITICAL VULNERABILITIES FOUND."
+                }
+                failure {
+                    echo "Security Test: VULNERABILITIES DETECTED."
+                    error("Pipeline aborted due to security issues.")
                 }
             }
         }
