@@ -1,20 +1,18 @@
 # Debug Doctors 🏥
 
+
+<p align="left">
+  <img src="https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 25">
+  <img src="https://img.shields.io/badge/Spring_Boot-4.0.3-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot 4.0.3">
+  <img src="https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" alt="Maven">
+  <img src="https://img.shields.io/badge/JUnit_5-Tested-25A162?style=for-the-badge&logo=junit5&logoColor=white" alt="JUnit 5">
+  <img src="https://img.shields.io/badge/Lombok-Active-5d3c85?style=for-the-badge&logo=lombok&logoColor=white" alt="Lombok">
+</p>
 API REST para gestão de agendamento de consultas médicas com validações robustas e testes automatizados.
 
 ## 📋 Objetivo
 
 Desenvolver uma API REST para gestão de horários médicos, com foco em garantir a **integridade das agendas** através de testes unitários automatizados e entrega contínua via pipeline.
-
----
-
-## 🏗️ Tecnologias
-
-- **Java 25**
-- **Spring Boot 4.0.3**
-- **Maven**
-- **JUnit** (testes unitários)
-- **Lombok** (redução de boilerplate)
 
 ---
 
