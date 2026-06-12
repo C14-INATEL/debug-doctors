@@ -29,39 +29,30 @@ class PatientControllerTest {
     @Mock
     private PatientService patientService;
 
-    // --- TESTE DE GET ALL ---
     @Test
     void shouldReturnAllPatientsAndStatus200() {
-        // Simula o serviço retornando uma lista vazia
         Mockito.when(patientService.findAll()).thenReturn(Collections.emptyList());
 
-        // Chama o método diretamente no controller
         ResponseEntity<List<PatientDTO>> response = patientController.getAllPatients();
 
-        // Verifica se o status é 200 OK
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 
-    // --- TESTE DE POST (CREATE ERRO) ---
     @Test
     void shouldReturn400WhenCreatePatientFails() {
-        // Criamos um mock do DTO para evitar erros ao chamar o .toEntity()
         PatientDTO mockDto = Mockito.mock(PatientDTO.class);
         Mockito.when(mockDto.toEntity()).thenReturn(new Patient());
 
-        // Simulamos o serviço lançando a exceção
         Mockito.when(patientService.save(any()))
                 .thenThrow(new IllegalArgumentException("Dados inválidos"));
 
         ResponseEntity<?> response = patientController.createPatient(mockDto);
 
-        // Verifica se o catch funcionou e retornou 400 Bad Request
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Dados inválidos", response.getBody());
     }
 
-    // --- TESTE DE GET BY ID (NOT FOUND) ---
     @Test
     void shouldReturn404WhenPatientNotFoundById() {
         Mockito.when(patientService.findById(99L))
@@ -69,12 +60,10 @@ class PatientControllerTest {
 
         ResponseEntity<?> response = patientController.getPatientById(99L);
 
-        // Verifica se o catch funcionou e retornou 404 Not Found
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Paciente não encontrado", response.getBody());
     }
 
-    // --- TESTE DE PUT (UPDATE ERRO) ---
     @Test
     void shouldReturn400WhenUpdatePatientFails() {
         PatientDTO mockDto = Mockito.mock(PatientDTO.class);
@@ -89,14 +78,12 @@ class PatientControllerTest {
         assertEquals("Erro ao atualizar", response.getBody());
     }
 
-    // --- TESTE DE DELETE ---
     @Test
     void shouldDeletePatientAndReturn204() {
         Mockito.doNothing().when(patientService).delete(1L);
 
         ResponseEntity<?> response = patientController.deletePatient(1L);
 
-        // Verifica se o status é 204 No Content
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
@@ -111,10 +98,8 @@ class PatientControllerTest {
         assertEquals("Paciente não encontrado", response.getBody());
     }
 
-    // --- TESTE DE GET ALL (COM DADOS) ---
     @Test
     void shouldReturnAllPatientsWithDataAndStatus200() {
-        // Cria um paciente de mentira
         Patient patient = new Patient(1L, "Carlos Silva", "11122233344", "carlos@email.com");
         Mockito.when(patientService.findAll()).thenReturn(List.of(patient));
 
@@ -125,7 +110,6 @@ class PatientControllerTest {
         assertEquals(1, response.getBody().size()); // Garante que a lista não veio vazia
     }
 
-    // --- TESTE DE POST (CREATE SUCESSO) ---
     @Test
     void shouldCreatePatientSuccessfullyAndReturn201() {
         Patient patient = new Patient(1L, "Carlos Silva", "11122233344", "carlos@email.com");
@@ -133,22 +117,18 @@ class PatientControllerTest {
         PatientDTO mockDto = Mockito.mock(PatientDTO.class);
         Mockito.when(mockDto.toEntity()).thenReturn(patient);
 
-        // Simulamos o serviço salvando com sucesso
         Mockito.when(patientService.save(any(Patient.class))).thenReturn(patient);
 
         ResponseEntity<?> response = patientController.createPatient(mockDto);
 
-        // Verifica se retornou 201 Created
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 
-    // --- TESTE DE GET BY ID (SUCESSO) ---
     @Test
     void shouldReturnPatientByIdSuccessfullyAndReturn200() {
         Patient patient = new Patient(1L, "Carlos Silva", "11122233344", "carlos@email.com");
 
-        // Simulamos que o ID 1 existe no banco
         Mockito.when(patientService.findById(1L)).thenReturn(patient);
 
         ResponseEntity<?> response = patientController.getPatientById(1L);
@@ -157,7 +137,6 @@ class PatientControllerTest {
         assertNotNull(response.getBody());
     }
 
-    // --- TESTE DE PUT (UPDATE SUCESSO) ---
     @Test
     void shouldUpdatePatientSuccessfullyAndReturn200() {
         Patient patient = new Patient(1L, "Carlos Silva", "11122233344", "carlos@email.com");

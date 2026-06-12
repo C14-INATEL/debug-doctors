@@ -125,13 +125,12 @@ class ScheduleTest {
 
     @Test
     void cannotCancelAlreadyCanceledSchedule() {
-        // Arrange
         Schedule schedule = Schedule.createSchedule(
                 mockedPatient, mockedDoctor,
-                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2),
                 "Routine", List.of()
         );
-        schedule.cancelSchedule("Motivo 1");
+        schedule.cancelSchedule("Primeiro cancelamento");
 
         // Act & Assert: segundo cancelamento deve lançar exceção
         IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
