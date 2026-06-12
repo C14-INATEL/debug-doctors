@@ -1,11 +1,15 @@
 package br.inatel.debug_doctors.controller;
 
+import br.inatel.debug_doctors.domain.doctor.Doctor;
+import br.inatel.debug_doctors.dto.DoctorDTO;
+import br.inatel.debug_doctors.service.DoctorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class DoctorControllerTest {
