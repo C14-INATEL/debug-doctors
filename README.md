@@ -158,7 +158,40 @@ As histórias de usuário que guiaram o desenvolvimento e suas respectivas cober
     * **Then** o sistema deve lançar uma exceção de estado inválido.
 * **Rastreabilidade:** US05 -> Issue #5 / PR #5 -> [ScheduleTest.java](file:///Users/schulzdimitrii/Documents/GitHub-Projects/debug-doctors/src/test/java/br/inatel/debug_doctors/domain/ScheduleTest.java) (`shouldCancelScheduleSuccessfully`, `cannotCancelAlreadyCanceledSchedule`)
 
+---
 
+## Metodologias de Desenvolvimento
+
+Fizemos uma reunião inicial para planejar qual o papel de cada um e qual metodologia(s) de desenvolvimento utilizar, e por fim, optamos por
+utilizar somente o **Kanban** dentro do **GitHub Projects**. 
+- **Cadência:** Nós nos comunicamos principalmente pelo **WhatsApp** e nos reunimos em reuniões curtas e objetivas para alinhar as atividades do dia.
+Optamos por não utilizar sprints pois o periodo de desenvolvimento foi bem curto e a cadência de comunicação era suficiente para mantermos o projeto organizado e alinhado.
+- **Papeis do grupo:** 
+    - `Dimitri:` PO / DevOps
+    - `Wagner:` DevOps
+    - `Esthefano:` QA
+    - `Matheus:` QA
+    - `Luiz:` Desenvolvedor
+    - `Yan:` Desenvolvedor
+
+- **Definition of Done (DoD):**
+  * Todas as histórias de usuários foram concluídas;
+  * Todos os testes foram aprovados;
+  * Todo o código foi revisado pelos integrantes do grupo.
+
+---
+
+## 🤖 Uso de IA
+
+Este projeto utilizou as LLMs `Gemini Flash 3.5` e `Claude Opus 4.6` como ferramentas de apoio e co-criação. 
+
+O uso destas ferramentas foi aplicado nas seguintes frentes:
+- Planejamento do projeto;
+- Planejamento de testes;
+- Geração de código;
+- Documentação.
+
+> Todos os artefatos gerados por IA foram revisados, testados e validados pelos integrantes do grupo.
 ---
 
 ## 🚀 Como Executar
