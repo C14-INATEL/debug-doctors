@@ -20,18 +20,15 @@ pipeline {
     }
     
     stages {
-        stage('Checkout') {
-            steps {
-                echo "Checking out source code..."
-                checkout scm
-            }
-            post {
-                success {
-                    echo "Checkout: SOURCE CODE RETRIEVED SUCCESSFULLY"
-                }
-                failure {
-                    echo "Checkout: FAILED TO RETRIEVE SOURCE CODE"
-                    error("Pipeline aborted due to checkout failure.")
+        stages {
+            stage('Checkout') {
+                steps {
+                    echo 'Clonando repositório do GitHub...'
+                    checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: '*/main']],
+                            userRemoteConfigs: [[url: 'https://github.com/C14-INATEL/debug-doctors']]
+                    ])
                 }
             }
         }
