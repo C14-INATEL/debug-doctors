@@ -28,39 +28,30 @@ class DoctorControllerTest {
     @Mock
     private DoctorService doctorService;
 
-    // --- TESTE DE GET ALL ---
     @Test
     void shouldReturnAllDoctorsAndStatus200() {
-        // Simula o serviço retornando uma lista vazia
         Mockito.when(doctorService.findAll()).thenReturn(Collections.emptyList());
 
-        // Chama o método diretamente no controller
         ResponseEntity<List<DoctorDTO>> response = doctorController.getAllDoctors();
 
-        // Verifica se o status é 200 OK
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 
-    // --- TESTE DE POST (CREATE ERRO) ---
     @Test
     void shouldReturn400WhenCreateDoctorFails() {
-        // Criamos um mock do DTO para evitar erros ao chamar o .toEntity()
         DoctorDTO mockDto = Mockito.mock(DoctorDTO.class);
         Mockito.when(mockDto.toEntity()).thenReturn(new Doctor());
 
-        // Simulamos o serviço lançando a exceção
         Mockito.when(doctorService.save(any()))
                 .thenThrow(new IllegalArgumentException("Dados inválidos"));
 
         ResponseEntity<?> response = doctorController.createDoctor(mockDto);
 
-        // Verifica se o catch funcionou e retornou 400 Bad Request
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Dados inválidos", response.getBody());
     }
 
-    // --- TESTE DE GET BY ID (NOT FOUND) ---
     @Test
     void shouldReturn404WhenDoctorNotFoundById() {
         Mockito.when(doctorService.findById(99L))
@@ -68,19 +59,16 @@ class DoctorControllerTest {
 
         ResponseEntity<?> response = doctorController.getDoctorById(99L);
 
-        // Verifica se o catch funcionou e retornou 404 Not Found
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Médico não encontrado", response.getBody());
     }
 
-    // --- TESTE DE DELETE ---
     @Test
     void shouldDeleteDoctorAndReturn204() {
         Mockito.doNothing().when(doctorService).delete(1L);
 
         ResponseEntity<?> response = doctorController.deleteDoctor(1L);
 
-        // Verifica se o status é 204 No Content
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
