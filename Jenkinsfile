@@ -49,11 +49,20 @@ pipeline {
             }
         }
 
-        stage('Code Coverage') {
+        stage('Security Test') {
             steps {
-                echo "Publishing code coverage reports..."
-                jacoco execPattern: 'target/*.exec', classPattern: 'target/classes', sourcePattern: 'src/main/java'
-                archiveArtifacts artifacts: 'target/site/jacoco/**', allowEmptyArchive: true
+                echo "Checking for vulnerabilities in project dependencies..."
+                // O comando que aciona o plugin que instalamos no pom.xml
+                sh 'mvn dependency-check:check'
+            }
+            post {
+                success {
+                    echo "Security Test: SECURE. NO CRITICAL VULNERABILITIES FOUND."
+                }
+                failure {
+                    echo "Security Test: VULNERABILITIES DETECTED."
+                    error("Pipeline aborted due to security issues.")
+                }
             }
         }
 

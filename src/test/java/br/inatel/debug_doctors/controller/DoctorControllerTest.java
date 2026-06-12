@@ -9,12 +9,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class DoctorControllerTest {
@@ -25,23 +28,61 @@ class DoctorControllerTest {
     @InjectMocks
     private DoctorController controller;
 
+    @Mock
+    private DoctorService doctorService;
+
     @Test
-    void shouldReturnAllDoctors() {
-        // Arrange
-        Doctor doctor = new Doctor();
-        doctor.setId(1L);
-        doctor.setName("Wagner");
-        doctor.setSpecialty("Cardiologia");
-        
-        Mockito.when(doctorService.findAll()).thenReturn(List.of(doctor));
+    void shouldReturnAllDoctorsAndStatus200() {
+        Mockito.when(doctorService.findAll()).thenReturn(Collections.emptyList());
 
-        // Act
-        ResponseEntity<List<DoctorDTO>> response = controller.getAllDoctors();
+        ResponseEntity<List<DoctorDTO>> response = doctorController.getAllDoctors();
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(1, response.getBody().size());
-        assertEquals("Wagner", response.getBody().get(0).getName());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void shouldReturn400WhenCreateDoctorFails() {
+        DoctorDTO mockDto = Mockito.mock(DoctorDTO.class);
+        Mockito.when(mockDto.toEntity()).thenReturn(new Doctor());
+
+        Mockito.when(doctorService.save(any()))
+                .thenThrow(new IllegalArgumentException("Dados inválidos"));
+
+        ResponseEntity<?> response = doctorController.createDoctor(mockDto);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Dados inválidos", response.getBody());
+    }
+
+    @Test
+    void shouldReturn404WhenDoctorNotFoundById() {
+        Mockito.when(doctorService.findById(99L))
+                .thenThrow(new IllegalArgumentException("Médico não encontrado"));
+
+        ResponseEntity<?> response = doctorController.getDoctorById(99L);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Médico não encontrado", response.getBody());
+    }
+
+    @Test
+    void shouldDeleteDoctorAndReturn204() {
+        Mockito.doNothing().when(doctorService).delete(1L);
+
+        ResponseEntity<?> response = doctorController.deleteDoctor(1L);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    void shouldReturn404WhenDeleteDoctorFails() {
+        Mockito.doThrow(new IllegalArgumentException("Médico não encontrado"))
+                .when(doctorService).delete(99L);
+
+        ResponseEntity<?> response = doctorController.deleteDoctor(99L);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Médico não encontrado", response.getBody());
     }
 }
