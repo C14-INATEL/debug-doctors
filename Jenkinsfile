@@ -80,7 +80,7 @@ pipeline {
                 sh 'docker compose up -d --build api db'
                 echo "Waiting for Spring Boot to be fully ready..."
                 sh '''
-                  while ! curl -s http://localhost:8000/api/medicos > /dev/null; do
+                  while ! curl -s http://host.docker.internal:8000/api/medicos > /dev/null; do
                    echo "API is still waking up... sleeping for 5 seconds."
                    sleep 5
                 done
