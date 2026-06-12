@@ -20,6 +20,21 @@ pipeline {
     }
     
     stages {
+        stage('Checkout') {
+            steps {
+                echo "Checking out source code..."
+                checkout scm
+            }
+            post {
+                success {
+                    echo "Checkout: SOURCE CODE RETRIEVED SUCCESSFULLY"
+                }
+                failure {
+                    echo "Checkout: FAILED TO RETRIEVE SOURCE CODE"
+                    error("Pipeline aborted due to checkout failure.")
+                }
+            }
+        }
         stage('Static Analysis') {
             steps {
                 echo "Running static code analysis..."
