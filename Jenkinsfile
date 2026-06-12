@@ -77,7 +77,7 @@ pipeline {
 
             steps {
                 echo "Starting PostgreSQL Database and API containers..."
-                sh 'docker-compose up -d --build api db'
+                sh 'docker compose up -d --build api db'
                 echo "Waiting for Spring Boot to be fully ready..."
                 sh '''
                   while ! curl -s http://localhost:8000/api/medicos > /dev/null; do
