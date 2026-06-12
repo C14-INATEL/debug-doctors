@@ -160,7 +160,7 @@ As histórias de usuário que guiaram o desenvolvimento e suas respectivas cober
 
 ---
 
-## Metodologias de Desenvolvimento
+## ⚙️ Metodologias de Desenvolvimento
 
 Fizemos uma reunião inicial para planejar qual o papel de cada um e qual metodologia(s) de desenvolvimento utilizar, e por fim, optamos por
 utilizar somente o **Kanban** dentro do **GitHub Projects**. 
@@ -181,6 +181,25 @@ Optamos por não utilizar sprints pois o periodo de desenvolvimento foi bem curt
 
 ---
 
+## 📋 Dinâmica de Desenvolvimento
+
+* **Divisão de Tarefas e Decisões Técnicas:**
+  A divisão de tarefas foi baseada nos papéis acordados. Os desenvolvedores (`Luiz` e `Yan`) codificaram os endpoints e a lógica de negócio. Os QAs (`Esthefano` e `Matheus`) criaram a suíte completa de testes unitários e de integração. O time de DevOps (`Dimitri` e `Wagner`) desenhou as entidades, a estrutura dockerizada local. Todo mundo configurou uma parte do pipeline contínuo no Jenkins. Decisões técnicas, como a escolha de banco de dados, versões de framework e modelagem de validação, foram tomadas coletivamente via reunião no Discord.
+
+* **Fluxo de Trabalho (Branches, Commits e Code Review):**
+  * **Branches:** Adotamos branches específicas baseadas em tarefas de desenvolvimento (ex: `feature/cadastro-medicos`, `refactor/update-readme-file` e `fix/cancellation-bug`), ramificadas a partir da branch principal.
+  * **Commits:** Aplicamos o padrão de *Conventional Commits* (usando prefixos como `feat:`, `fix:`, `refactor:` e `docs:`) para facilitar a leitura e o rastreamento do histórico de alterações.
+  * **Code Review:** O merge para a branch `main` dependia da abertura de um Pull Request (PR), passando obrigatoriamente pela validação automática da esteira de CI/CD (linting com Checkstyle e testes de unidade) e pela revisão com aprovação por parte de outro membro do grupo.
+
+* **Conflitos, Bloqueios e Reorganização:**
+  * **Resolução de Conflitos de Mesclagem:** Pelo fato de as classes [Schedule.java](file:///Users/schulzdimitrii/Documents/GitHub-Projects/debug-doctors/src/main/java/br/inatel/debug_doctors/domain/schedule/Schedule.java) e `ScheduleService` serem centrais para as validações de regras de negócio, ocorreram conflitos de merge durante o desenvolvimento paralelo. O time resolveu os conflitos fazendo sessões rápidas de pareamento para garantir que nenhuma lógica fosse sobrescrita indevidamente.
+
+* **Lições Aprendidas:**
+  * **Padrões:** Em projetos futuros, definiremos padrões de branches e commits de forma mais rigorosa.
+  * **Comunicação:** A comunicação assíncrona e as reuniões curtas e objetivas foram quase suficientes para mantermos o projeto organizado e alinhado, tivemos alguns conflitos de merge, mas sentimos que poderia ter sido mais produtivo se tivessemos uma comunicação mais frequente e estruturada.
+
+---
+
 ## 🤖 Uso de IA
 
 Este projeto utilizou as LLMs `Gemini Flash 3.5` e `Claude Opus 4.6` como ferramentas de apoio e co-criação. 
@@ -192,6 +211,7 @@ O uso destas ferramentas foi aplicado nas seguintes frentes:
 - Documentação.
 
 > Todos os artefatos gerados por IA foram revisados, testados e validados pelos integrantes do grupo.
+
 ---
 
 ## 🚀 Como Executar
