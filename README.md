@@ -7,6 +7,7 @@
   <img src="https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" alt="Maven">
   <img src="https://img.shields.io/badge/JUnit_5-Tested-25A162?style=for-the-badge&logo=junit5&logoColor=white" alt="JUnit 5">
   <img src="https://img.shields.io/badge/Lombok-Active-5d3c85?style=for-the-badge&logo=lombok&logoColor=white" alt="Lombok">
+  <img src="https://img.shields.io/badge/JaCoCo-Coverage-008080?style=for-the-badge" alt="JaCoCo">
 </p>
 API REST para gestão de agendamento de consultas médicas com validações robustas e testes automatizados.
 
