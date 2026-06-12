@@ -3,158 +3,206 @@ package br.inatel.debug_doctors.domain;
 import br.inatel.debug_doctors.domain.doctor.Doctor;
 import br.inatel.debug_doctors.domain.patient.Patient;
 import br.inatel.debug_doctors.domain.schedule.Schedule;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ScheduleTest {
+
+    // Mockito cria os mocks automaticamente via @Mock
+    @Mock
+    private Patient mockedPatient;
+
+    @Mock
+    private Doctor mockedDoctor;
+
+    // -------------------------------------------------------------------------
+    // Testes com objetos reais — validam a lógica interna do Schedule
+    // -------------------------------------------------------------------------
 
     @Test
     void testNewSchedule() {
-        Patient patient = new Patient();
-        Doctor doctor = new Doctor();
+        // Arrange: usa mocks no lugar de instâncias reais de Patient e Doctor
         LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
         String description = "Routine Checkup";
 
-        Schedule schedule = Schedule.createSchedule(patient, doctor, dateTime, description, List.of());
+        // Act
+        Schedule schedule = Schedule.createSchedule(mockedPatient, mockedDoctor, dateTime, description, List.of());
 
-        Assertions.assertNotNull(schedule);
-        Assertions.assertEquals(patient, schedule.getPatient());
-        Assertions.assertEquals(doctor, schedule.getDoctor());
-        Assertions.assertEquals(dateTime, schedule.getDateTime());
-        Assertions.assertEquals(description, schedule.getDescription());
-        Assertions.assertFalse(schedule.isConfirmed());
+        // Assert
+        assertNotNull(schedule);
+        assertEquals(mockedPatient, schedule.getPatient());
+        assertEquals(mockedDoctor, schedule.getDoctor());
+        assertEquals(dateTime, schedule.getDateTime());
+        assertEquals(description, schedule.getDescription());
+        assertFalse(schedule.isConfirmed());
     }
 
     @Test
     void confirmSchedule() {
+        // Arrange
+        Schedule schedule = Schedule.createSchedule(
+                mockedPatient, mockedDoctor,
+                LocalDateTime.now().plusDays(1),
+                "Routine Checkup", List.of()
+        );
 
-        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(1),
-                "Routine Checkup", List.of());
-
+        // Act
         schedule.confirmSchedule();
 
-        Assertions.assertTrue(schedule.isConfirmed());
+        // Assert
+        assertTrue(schedule.isConfirmed());
     }
 
     @Test
     void shouldAllowReschedulingByUpdatingDateTime() {
+        // Arrange
         Schedule schedule = new Schedule();
-        java.time.LocalDateTime originalTime = java.time.LocalDateTime.of(2026, 4, 15, 14, 0);
+        LocalDateTime originalTime = LocalDateTime.of(2026, 4, 15, 14, 0);
         schedule.setDateTime(originalTime);
 
-        java.time.LocalDateTime newTime = java.time.LocalDateTime.of(2026, 4, 20, 16, 30);
+        // Act
+        LocalDateTime newTime = LocalDateTime.of(2026, 4, 20, 16, 30);
         schedule.setDateTime(newTime);
 
-        Assertions.assertEquals(newTime, schedule.getDateTime(),
+        // Assert
+        assertEquals(newTime, schedule.getDateTime(),
                 "The schedule date and time should be updated to the new time");
     }
 
     @Test
     void cannotAllowScheduleInThePast() {
-        Patient patient = new Patient();
-        Doctor doctor = new Doctor();
-        LocalDateTime dateTime = LocalDateTime.now().minusDays(1);
-        String description = "Routine Checkup";
+        // Arrange
+        LocalDateTime pastDateTime = LocalDateTime.now().minusDays(1);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Schedule.createSchedule(patient, doctor, dateTime, description, List.of());
-        });
-
+        // Act & Assert: a lógica de validação de data fica no Schedule.createSchedule
+        assertThrows(IllegalArgumentException.class, () ->
+                Schedule.createSchedule(mockedPatient, mockedDoctor, pastDateTime, "Routine Checkup", List.of())
+        );
     }
 
     @Test
     void cannotAllowOverlappingSchedules() {
-        Patient patient = new Patient();
-        Doctor doctor = new Doctor();
+        // Arrange: cria um agendamento existente e tenta criar outro no mesmo horário
         LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
-        String description = "Routine Checkup";
 
-        Schedule existingSchedule = Schedule.createSchedule(patient, doctor, dateTime, "Routine Checkup", List.of());
+        Schedule existingSchedule = Schedule.createSchedule(
+                mockedPatient, mockedDoctor, dateTime, "Routine Checkup", List.of()
+        );
         List<Schedule> doctorSchedules = List.of(existingSchedule);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Schedule.createSchedule(patient, doctor, dateTime, description, doctorSchedules);
-        });
+        // Act & Assert: deve lançar exceção por conflito de horário
+        assertThrows(IllegalArgumentException.class, () ->
+                Schedule.createSchedule(mockedPatient, mockedDoctor, dateTime, "Routine Checkup", doctorSchedules)
+        );
     }
 
     @Test
     void shouldCancelScheduleSuccessfully() {
+        // Arrange
+        Schedule schedule = Schedule.createSchedule(
+                mockedPatient, mockedDoctor,
+                LocalDateTime.now().plusDays(1),
+                "Routine", List.of()
+        );
 
-        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(2),
-                "Routine", List.of());
-
+        // Act
         schedule.cancelSchedule("Paciente adoeceu");
 
-        Assertions.assertTrue(schedule.isCanceled());
-        Assertions.assertEquals("Paciente adoeceu", schedule.getCancellationReason());
-        Assertions.assertFalse(schedule.isConfirmed());
+        // Assert
+        assertTrue(schedule.isCanceled());
+        assertEquals("Paciente adoeceu", schedule.getCancellationReason());
+        assertFalse(schedule.isConfirmed());
     }
 
     @Test
     void cannotCancelAlreadyCanceledSchedule() {
-
-        Schedule schedule = Schedule.createSchedule(new Patient(), new Doctor(), LocalDateTime.now().plusDays(2),
-                "Routine", List.of());
+        // Arrange
+        Schedule schedule = Schedule.createSchedule(
+                mockedPatient, mockedDoctor,
+                LocalDateTime.now().plusDays(1),
+                "Routine", List.of()
+        );
         schedule.cancelSchedule("Motivo 1");
 
-        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
-            schedule.cancelSchedule("Motivo 2");
-        });
-        Assertions.assertEquals("Schedule is already canceled.", exception.getMessage());
+        // Act & Assert: segundo cancelamento deve lançar exceção
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                schedule.cancelSchedule("Motivo 2")
+        );
+        assertEquals("Schedule is already canceled.", exception.getMessage());
     }
 
     @Test
     void cannotCreateScheduleWithoutPatient() {
-
-        Doctor doctor = new Doctor();
+        // Arrange
         LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
 
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Schedule.createSchedule(null, doctor, dateTime, "Routine", List.of());
-        });
-        Assertions.assertEquals("Patient cannot be null.", exception.getMessage());
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                Schedule.createSchedule(null, mockedDoctor, dateTime, "Routine", List.of())
+        );
+        assertEquals("Patient cannot be null.", exception.getMessage());
     }
 
     @Test
     void cannotCreateScheduleWithoutDoctor() {
-
-        Patient patient = new Patient();
+        // Arrange
         LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
 
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Schedule.createSchedule(patient, null, dateTime, "Routine", List.of());
-        });
-        Assertions.assertEquals("Doctor cannot be null.", exception.getMessage());
-    }
-
-    @Test
-    void shouldCreateScheduleSuccessfullyWithMockedDoctorAndPatient() {
-        Doctor doctor = mock(Doctor.class);
-        Patient patient = mock(Patient.class);
-        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
-
-        Schedule result = Schedule.createSchedule(patient, doctor, dateTime, "Routine Checkup", List.of());
-
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(doctor, result.getDoctor());
-        Assertions.assertEquals(patient, result.getPatient());
-    }
-
-    @Test
-    void shouldThrowWhenConflictDetectedWithMockedExistingSchedule() {
-        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
-
-        Schedule existingSchedule = mock(Schedule.class);
-        when(existingSchedule.getDateTime()).thenReturn(dateTime);
-
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-                Schedule.hasConflict(List.of(existingSchedule), dateTime)
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                Schedule.createSchedule(mockedPatient, null, dateTime, "Routine", List.of())
         );
+        assertEquals("Doctor cannot be null.", exception.getMessage());
+    }
+
+    // -------------------------------------------------------------------------
+    // Testes extras com Mockito — simulam comportamento de dependências
+    // -------------------------------------------------------------------------
+
+    @Test
+    void shouldVerifyDoctorAndPatientInteractionOnScheduleCreation() {
+        // Arrange: configura retornos nos mocks para simular dados reais
+        when(mockedPatient.getId()).thenReturn(1L);
+        when(mockedDoctor.getId()).thenReturn(2L);
+
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+
+        // Act
+        Schedule schedule = Schedule.createSchedule(
+                mockedPatient, mockedDoctor, dateTime, "Consulta de rotina", List.of()
+        );
+
+        // Assert: verifica que o schedule recebeu os objetos mockados corretamente
+        assertNotNull(schedule);
+        assertEquals(1L, schedule.getPatient().getId());
+        assertEquals(2L, schedule.getDoctor().getId());
+
+        // Verifica que os IDs foram consultados
+        verify(mockedPatient, times(1)).getId();
+        verify(mockedDoctor, times(1)).getId();
+    }
+
+    @Test
+    void shouldNotInteractWithDoctorOrPatientWhenScheduleIsInThePast() {
+        // Arrange
+        LocalDateTime pastDate = LocalDateTime.now().minusDays(1);
+
+        // Act & Assert: exceção lançada antes de qualquer interação com Patient/Doctor
+        assertThrows(IllegalArgumentException.class, () ->
+                Schedule.createSchedule(mockedPatient, mockedDoctor, pastDate, "Rotina", List.of())
+        );
+
+        // Garante que nenhum getter foi chamado nos mocks — a validação falhou cedo
+        verifyNoInteractions(mockedPatient);
+        verifyNoInteractions(mockedDoctor);
     }
 }

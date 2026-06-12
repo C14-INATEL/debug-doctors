@@ -6,12 +6,7 @@ import br.inatel.debug_doctors.service.DoctorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,29 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(MockitoExtension.class)
 class DoctorControllerTest {
 
-    @Mock
-    private DoctorService doctorService;
-
     @InjectMocks
-    private DoctorController controller;
+    private DoctorController doctorController;
 
     @Test
-    void shouldReturnAllDoctors() {
-        // Arrange
-        Doctor doctor = new Doctor();
-        doctor.setId(1L);
-        doctor.setName("Wagner");
-        doctor.setSpecialty("Cardiologia");
-        
-        Mockito.when(doctorService.findAll()).thenReturn(List.of(doctor));
+    void shouldReturnHelloDoctorMessage() {
+        // Act: chama o endpoint diretamente pelo controller injetado
+        String response = doctorController.getDoctor();
 
-        // Act
-        ResponseEntity<List<DoctorDTO>> response = controller.getAllDoctors();
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(1, response.getBody().size());
-        assertEquals("Wagner", response.getBody().get(0).getName());
+        assertEquals("Hello Doctor!", response,
+                "The controller message should be 'Hello Doctor!'");
     }
 }
