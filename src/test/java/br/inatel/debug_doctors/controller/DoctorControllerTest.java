@@ -26,10 +26,7 @@ class DoctorControllerTest {
     private DoctorService doctorService;
 
     @InjectMocks
-    private DoctorController controller;
-
-    @Mock
-    private DoctorService doctorService;
+    private DoctorController doctorController;
 
     @Test
     void shouldReturnAllDoctorsAndStatus200() {
