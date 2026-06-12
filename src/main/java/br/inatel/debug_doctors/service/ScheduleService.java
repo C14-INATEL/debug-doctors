@@ -35,11 +35,8 @@ public class ScheduleService {
         Doctor doctor = doctorService.findById(doctorId);
         Patient patient = patientService.findById(patientId);
 
-        // Fetch all existing schedules for this doctor (excluding canceled ones)
-        List<Schedule> allSchedules = scheduleRepository.findAll();
-        List<Schedule> doctorSchedules = allSchedules.stream()
-                .filter(s -> s.getDoctor().getId().equals(doctorId))
-                .toList();
+        // REFATORAÇÃO: A lógica de filtro foi extraída para um método privado, melhorando a legibilidade.
+        List<Schedule> doctorSchedules = getSchedulesByDoctor(doctorId);
 
         Schedule schedule = Schedule.createSchedule(patient, doctor, dateTime, description, doctorSchedules);
         return scheduleRepository.save(schedule);
@@ -55,5 +52,16 @@ public class ScheduleService {
         Schedule schedule = findById(id);
         schedule.cancelSchedule(reason);
         return scheduleRepository.save(schedule);
+    }
+
+    // -------------------------------------------------------------------------
+    // MÉTODOS AUXILIARES EXTRAÍDOS (REFACTORING)...
+    // -------------------------------------------------------------------------
+
+    private List<Schedule> getSchedulesByDoctor(Long doctorId) {
+        // No futuro, isso pode ser melhorado para uma Query direto no Repository (ex: findByDoctorId)
+        return scheduleRepository.findAll().stream()
+                .filter(s -> s.getDoctor().getId().equals(doctorId))
+                .toList();
     }
 }
