@@ -52,6 +52,10 @@ pipeline {
                 sh 'mvn clean test'
             }
             post {
+                success {
+                    echo "Archiving code coverage reports..."
+                    archiveArtifacts artifacts: 'target/site/jacoco/**', allowEmptyArchive: true
+                }
                 failure {
                     echo "Tests: FAILURE"
                     error("Pipeline aborted due to test failures.")
