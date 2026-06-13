@@ -112,7 +112,7 @@ class DTOTest {
         Patient patient = new Patient(1L, "Carlos Silva", "111.222.333-44", "carlos@email.com");
         Doctor doctor = new Doctor(1L, "Dr. House", "Cardiologia", "12345-MG",
                 LocalTime.of(8, 0), LocalTime.of(18, 0));
-        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1).with(LocalTime.of(10, 0));
 
         Schedule schedule = Schedule.createSchedule(patient, doctor, dateTime, "Checkup", List.of());
 
