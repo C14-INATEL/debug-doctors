@@ -33,7 +33,7 @@ pipeline {
         stage('Static Analysis') {
             steps {
                 echo "Running static code analysis..."
-                sh 'mvn checkstyle:check -Dcheckstyle.failOnViolation=false -Dcheckstyle.failsOnError=false'
+                sh 'mvn checkstyle:check'
             }
             post {
                 success {
@@ -146,6 +146,8 @@ pipeline {
         failure { echo "Pipeline FAILED. Check the logs above." }
         unstable { echo "Pipeline UNSTABLE — some tests failed or timed out." }
         always {
+            echo "Cleaning up Docker containers..."
+            sh 'if [ -f docker-compose.yaml ]; then docker compose down; fi'
             echo "========================================================"
             echo "Pipeline : ${env.PIPELINE_NAME}"
             echo "Build    : #${BUILD_NUMBER}"
