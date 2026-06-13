@@ -35,7 +35,6 @@ public class ScheduleService {
         Doctor doctor = doctorService.findById(doctorId);
         Patient patient = patientService.findById(patientId);
 
-        // REFATORAÇÃO: A lógica de filtro foi extraída para um método privado, melhorando a legibilidade.
         List<Schedule> doctorSchedules = getSchedulesByDoctor(doctorId);
 
         Schedule schedule = Schedule.createSchedule(patient, doctor, dateTime, description, doctorSchedules);
@@ -54,9 +53,6 @@ public class ScheduleService {
         return scheduleRepository.save(schedule);
     }
 
-    // -------------------------------------------------------------------------
-    // MÉTODOS AUXILIARES EXTRAÍDOS (REFACTORING)...
-    // -------------------------------------------------------------------------
 
     private List<Schedule> getSchedulesByDoctor(Long doctorId) {
         // No futuro, isso pode ser melhorado para uma Query direto no Repository (ex: findByDoctorId)
