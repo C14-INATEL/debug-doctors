@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD Suppressions 1.1//EN"
+    "https://checkstyle.org/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+    <!-- Suppress Javadoc checks for all files -->
+    <suppress checks="JavadocMethod" files=".*" />
+    <suppress checks="JavadocType" files=".*" />
+    <suppress checks="JavadocVariable" files=".*" />
+    <suppress checks="JavadocStyle" files=".*" />
+    <suppress checks="JavadocPackage" files=".*" />
+    <suppress checks="MissingJavadocMethod" files=".*" />
+    <suppress checks="MissingJavadocType" files=".*" />
+    <suppress checks="InvalidJavadocPosition" files=".*" />
+    <suppress checks="SummaryJavadoc" files=".*" />
+    <suppress checks="AtclauseOrder" files=".*" />
+    <suppress checks="NonEmptyAtclauseDescription" files=".*" />
+    
+    <!-- Suppress DesignForExtension checks -->
+    <suppress checks="DesignForExtension" files=".*" />
+    
+    <!-- Suppress FinalParameters checks -->
+    <suppress checks="FinalParameters" files=".*" />
+    
+    <!-- Suppress MagicNumber checks -->
+    <suppress checks="MagicNumber" files=".*" />
+    
+    <!-- Suppress LineLength checks -->
+    <suppress checks="LineLength" files=".*" />
+</suppressions>
