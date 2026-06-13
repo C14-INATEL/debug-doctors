@@ -20,16 +20,14 @@ pipeline {
     }
 
     stages {
-        stages {
-            stage('Checkout') {
-                steps {
-                    echo 'Clonando repositório do GitHub...'
-                    checkout([
-                            $class: 'GitSCM',
-                            branches: [[name: '*/main']],
-                            userRemoteConfigs: [[url: 'https://github.com/C14-INATEL/debug-doctors']]
-                    ])
-                }
+        stage('Checkout') {
+            steps {
+                echo 'Clonando repositório do GitHub...'
+                checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/main']],
+                        userRemoteConfigs: [[url: 'https://github.com/C14-INATEL/debug-doctors']]
+                ])
             }
         }
         stage('Static Analysis') {
