@@ -1,7 +1,7 @@
 # Debug Doctors 🏥
 
 
-<p align="left">
+<p align="center">
   <img src="https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 25">
   <img src="https://img.shields.io/badge/Spring_Boot-4.0.3-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot 4.0.3">
   <img src="https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" alt="Maven">
@@ -17,26 +17,14 @@ Desenvolver uma API REST para gestão de horários médicos, com foco em garanti
 
 ---
 
-## 📦 Principais Entidades
+## 🛠️ Funcionalidades
 
-### Médico
-- Nome
-- Especialidade
-- CRM
-- Horário de Início do Expediente
-- Horário de Fim do Expediente
-
-### Paciente
-- Nome
-- CPF
-- E-mail
-
-### Agendamento
-- Médico (referência)
-- Paciente (referência)
-- Data/Hora de Início
-- Data/Hora de Fim
-- Status (Agendado, Cancelado, Realizado)
+A aplicação engloba as seguintes funcionalidades centrais:
+- **Gestão de Médicos:** Cadastro, atualização, listagem e remoção de profissionais da saúde, incluindo dados de expediente.
+- **Gestão de Pacientes:** Cadastro, atualização, listagem e remoção de pacientes, com validações integradas de CPF e e-mail.
+- **Agendamento de Consultas:** Marcação de horários associando um médico e um paciente, validando restrições automaticamente.
+- **Cancelamento com Motivo:** Permite o cancelamento de uma consulta agendada mediante registro obrigatório do motivo do cancelamento.
+- **Confirmação de Consulta:** Atualização do status do agendamento para confirmar a realização da consulta médica.
 
 ---
 
@@ -50,13 +38,13 @@ Desenvolver uma API REST para gestão de horários médicos, com foco em garanti
 
 As seguintes validações são **obrigatórias** e devem ser testadas:
 
-| Regra | Descrição | Status |
-|-------|-----------|--------|
-| ⏰ **Conflito de Horário** | Um médico não pode ter dois agendamentos sobrepostos | Implementado |
-| 📅 **Fora do Expediente** | Não permitir agendamentos antes do início ou após o fim da jornada do médico | Implementado |
-| ⏳ **Antecedência Mínima** | Consultas só podem ser agendadas com pelo menos 30 minutos de antecedência | Implementado |
-| ❌ **Regra de Cancelamento** | O cancelamento só é permitido se faltarem mais de 24h para a consulta | Implementado |
-| ⏱️ **Duração Padrão** | Validar se a consulta tem o tempo mínimo/máximo permitido (ex: 30 min) | Implementado |
+| Regra | Descrição |
+|-------|-----------|
+| ⏰ **Conflito de Horário** | Um médico não pode ter dois agendamentos sobrepostos |
+| 📅 **Fora do Expediente** | Não permitir agendamentos antes do início ou após o fim da jornada do médico |
+| ⏳ **Antecedência Mínima** | Consultas só podem ser agendadas com pelo menos 30 minutos de antecedência |
+| ❌ **Regra de Cancelamento** | O cancelamento só é permitido se faltarem mais de 24h para a consulta |
+| ⏱️ **Duração Padrão** | Validar se a consulta tem o tempo mínimo/máximo permitido (ex: 30 min) |
 
 ---
 
@@ -216,28 +204,38 @@ O uso destas ferramentas foi aplicado nas seguintes frentes:
 ## 🚀 Como Executar
 
 ### Pré-requisitos
-- Java 25+
-- Maven 3.6+
+- **Docker** e **Docker Compose** instalados
 
 ### Clonar e Instalar
-
 ```bash
-git clone https://github.com/seu-usuario/debug-doctors.git
+git clone https://github.com/C14-INATEL/debug-doctors.git
 cd debug-doctors
 ```
 
-### Executar a Aplicação
-
+### Executar a Aplicação (via Docker)
+Suba a infraestrutura completa contendo a API Spring Boot, Banco de Dados PostgreSQL e Jenkins com o seguinte comando:
 ```bash
-./mvnw spring-boot:run
+docker-compose up -d --build
 ```
 
-A aplicação estará disponível em: `http://localhost:3000`
+Os serviços estarão disponíveis em:
+- **API (Spring Boot):** `http://localhost:8000`
+- **Banco de Dados (PostgreSQL):** `localhost:5432`
+- **Jenkins CI/CD:** `http://localhost:8080`
+
+Para parar e remover todos os containers ativos:
+```bash
+docker-compose down
+```
 
 ### Executar Testes
-
+Você pode rodar a suíte de testes de forma nativa (caso possua Maven instalado localmente):
 ```bash
-./mvnw test
+mvn test
+```
+Ou diretamente dentro de um container Maven temporário:
+```bash
+docker-compose run --rm api mvn test
 ```
 
 ---
@@ -266,47 +264,6 @@ A API fornece os seguintes endpoints:
 - `GET /api/agendamentos/{id}` - Obter dados de um agendamento
 - `PUT /api/agendamentos/{id}/cancelar` - Cancelar um agendamento
 - `PUT /api/agendamentos/{id}/confirmar` - Confirmar realização
-
----
-
-## 🧪 Estratégia de Testes
-
-Cada regra de negócio e controlador possui testes automatizados específicos:
-
-```
-src/test/java/br/inatel/debug_doctors/
-├── controller/
-│   └── DoctorControllerTest.java
-└── domain/
-    ├── DoctorTest.java
-    ├── PatientTest.java
-    ├── PatientTestMock.java
-    ├── ScheduleTest.java
-    └── ManualMockTest.java
-```
-
----
-
-## 📊 Status do Projeto
-
-- [x] Setup inicial do projeto
-- [x] Criar entidades (Médico, Paciente, Agendamento)
-- [x] Implementar validações de negócio
-- [x] Criar testes unitários
-- [x] Implementar controllers REST
-- [ ] Documentação API (Swagger/OpenAPI)
-- [x] Pipeline CI/CD
-- [ ] Deploy em produção
-
----
-
-## 📝 Notas de Desenvolvimento
-
-- Usar **Lombok** para reduzir boilerplate de getters/setters
-- Implementar validações como **serviços separados** ou **validators**
-- Usar **try-catch** com `RuntimeException` ou `IllegalArgumentException` para violações de regra
-- Manter **100% de cobertura de testes** para todas as regras de negócio
-- Documentar cada regra com exemplos de entrada/saída
 
 ---
 
