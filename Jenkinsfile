@@ -1,7 +1,7 @@
 pipeline {
 
     agent any
-    
+
     options {
         timeout(time: 30, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
@@ -18,7 +18,7 @@ pipeline {
         PIPELINE_NAME = 'Debug Doctors — CI/CD Pipeline'
         POSTGRES_PASSWORD = credentials('postgres-db-password')
     }
-    
+
     stages {
         stages {
             stage('Checkout') {
@@ -97,12 +97,20 @@ pipeline {
 
         stage('Deploy') {
             when {
-                branch 'main'
-            }
-            
+               branch 'main'
+           }
+
             steps {
                 echo "Starting PostgreSQL Database and API containers..."
-                sh 'docker-compose up -d --build api db'
+                sh 'docker compose up -d --build api db'
+                echo "Waiting for Spring Boot to be fully ready..."
+                sh '''
+                  while ! curl -s http://host.docker.internal:8000/api/medicos > /dev/null; do
+                   echo "API is still waking up... sleeping for 5 seconds."
+                   sleep 5
+                done
+                echo "API is UP and READY to accept connections!"
+                '''
             }
             post {
                 success {
@@ -114,6 +122,32 @@ pipeline {
                 }
             }
         }
+
+
+        stage('E2E API Tests (Newman)') {
+            when {
+               branch 'main'
+           }
+
+            steps {
+             echo "Running Postman automated collection via Newman..."
+             sh '''
+             docker run --rm --network="host" \
+                 --volumes-from $(hostname) \
+                  -t postman/newman run ${WORKSPACE}/postman/collection.json
+                  '''
+                    }
+            post {
+                success {
+                    echo "API Tests: ALL ENDPOINTS ARE RESPONDING CORRECTLY"
+                }
+                failure {
+                    echo "API Tests: FAILED TO VALIDATE ENDPOINTS"
+                    error("Pipeline aborted due to API End-to-End test failures.")
+                }
+            }
+        }
+
     }
 
     post {

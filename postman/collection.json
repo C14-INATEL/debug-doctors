@@ -1,0 +1,146 @@
+{
+  "info": {
+    "name": "Debug Doctors API E2E Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Create Doctor",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Doctor created successfully\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set(\"doctorId\", jsonData.id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Dr. Wagner Dourado\",\n  \"crm\": \"123456MG\",\n  \"specialty\": \"Urologist\",\n  \"shiftStart\": \"08:00:00\",\n  \"shiftEnd\": \"18:00:00\"\n}"
+        },
+        "url": {
+          "raw": "http://host.docker.internal:8000/api/medicos",
+          "protocol": "http",
+          "host": [
+            "host",
+            "docker",
+            "internal"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "medicos"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Create Patient",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Patient created successfully\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "// Salva o ID gerado na memoria do Postman",
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set(\"patientId\", jsonData.id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Esthefano Rosa\",\n  \"cpf\": \"11122233344\",\n  \"email\": \"Rosa@email.com\"\n}"
+        },
+        "url": {
+          "raw": "http://host.docker.internal:8000/api/pacientes",
+          "protocol": "http",
+          "host": [
+            "host",
+            "docker",
+            "internal"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "pacientes"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Create Appointment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Appointment created successfully\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"doctorId\": {{doctorId}},\n  \"patientId\": {{patientId}},\n  \"dateTime\": \"2026-08-15T14:30:00\",\n  \"description\": \"First routine checkup\"\n}"
+        },
+        "url": {
+          "raw": "http://host.docker.internal:8000/api/agendamentos",
+          "protocol": "http",
+          "host": [
+            "host",
+            "docker",
+            "internal"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "agendamentos"
+          ]
+        }
+      }
+    }
+  ]
+}
